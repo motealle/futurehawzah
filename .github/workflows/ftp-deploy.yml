@@ -1,0 +1,77 @@
+name: Deploy Future Hawzah via FTP
+
+on:
+  push:
+    paths:
+      - ".github/workflows/ftp-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Prepare v0.9 live entry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f fsinfo-static/index-v0.9-book-core.html
+          test -d fsinfo-static/v0.9
+          mkdir -p _deploy-live
+          cp fsinfo-static/index-v0.9-book-core.html _deploy-live/index.html
+          echo "live_index_sha256=$(sha256sum _deploy-live/index.html | awk '{print $1}')"
+
+      - name: Deploy with FTP cd
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME_FUTUREHAWZAH_IR }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD_FUTUREHAWZAH_IR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "$FTP_SERVER" -e "
+            set cmd:fail-exit yes;
+            set net:max-retries 2;
+            set net:timeout 20;
+            set ftp:ssl-allow yes;
+            set ssl:verify-certificate no;
+            cd .;
+            put _deploy-live/index.html -o index.html;
+            mirror -R --verbose --parallel=4 fsinfo-static/v0.9 v0.9;
+            mirror -R --verbose --parallel=4 fsinfo-static fsinfo-static;
+            mirror -R --verbose --parallel=4 fsinfo fsinfo;
+            bye
+          "
+
+      - name: Verify deployed structure and live index
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME_FUTUREHAWZAH_IR }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD_FUTUREHAWZAH_IR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "$FTP_SERVER" -e "
+            set cmd:fail-exit yes;
+            set net:max-retries 1;
+            set net:timeout 20;
+            set ftp:ssl-allow yes;
+            set ssl:verify-certificate no;
+            cd .;
+            get index.html -o /tmp/remote-index.html;
+            cls -ld v0.9 fsinfo-static fsinfo;
+            bye
+          "
+          cmp _deploy-live/index.html /tmp/remote-index.html
+          echo "Remote index is byte-identical to v0.9 entry."
