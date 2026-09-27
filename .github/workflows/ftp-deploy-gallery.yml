@@ -1,0 +1,80 @@
+name: Deploy version gallery to /t
+
+on:
+  push:
+    paths:
+      - "gallery/**"
+      - "scripts/build-t-gallery.sh"
+      - "fsinfo-static/**"
+      - ".github/workflows/ftp-deploy-gallery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build immutable version gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x scripts/build-t-gallery.sh
+          scripts/build-t-gallery.sh _t-build
+          for v in $(seq -w 1 13); do test -f "_t-build/$v/index.html"; done
+          grep -q '09 (Live)' _t-build/index.html
+          grep -q 'href="./13/"' _t-build/index.html
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Upload /t with FTP
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME_FUTUREHAWZAH_IR }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD_FUTUREHAWZAH_IR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "$FTP_SERVER" -e "
+            set cmd:fail-exit yes;
+            set net:max-retries 2;
+            set net:timeout 20;
+            set ftp:ssl-allow yes;
+            set ssl:verify-certificate no;
+            cd .;
+            mkdir -p t;
+            mirror -R --verbose --parallel=4 _t-build t;
+            bye
+          "
+
+      - name: Verify remote gallery
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME_FUTUREHAWZAH_IR }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD_FUTUREHAWZAH_IR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "$FTP_SERVER" -e "
+            set cmd:fail-exit yes;
+            set net:max-retries 1;
+            set net:timeout 20;
+            set ftp:ssl-allow yes;
+            set ssl:verify-certificate no;
+            cd .;
+            get t/index.html -o /tmp/t-index.html;
+            get t/09/index.html -o /tmp/t-09-index.html;
+            cls -ld t/01 t/02 t/03 t/04 t/05 t/06 t/07 t/08 t/09 t/10 t/11 t/12 t/13;
+            bye
+          "
+          cmp _t-build/index.html /tmp/t-index.html
+          cmp _t-build/09/index.html /tmp/t-09-index.html
+          echo "Remote /t index and live snapshot verified."
