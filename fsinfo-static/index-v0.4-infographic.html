@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>FSInfo v0.4 Infographic — نقشه کلان‌روندهای آینده حوزه‌های علمیه</title>
+  <style>
+    :root{
+      font-family: Vazirmatn, "Vazirmatn FD", Tahoma, Arial, sans-serif;
+      font-synthesis:none;
+      --bg:#eef1e9;
+      --bg-2:#faf9ee;
+      --panel:rgba(255,255,255,.82);
+      --panel-strong:rgba(255,255,255,.96);
+      --panel-border:rgba(37,58,120,.12);
+      --text:#15204f;
+      --muted:#667089;
+      --muted-2:#8a91a2;
+      --accent:#4155ff;
+      --accent-2:#08a3a8;
+      --danger:#a33b5a;
+      --grid:#8e9a8e;
+      --shadow:0 22px 80px rgba(35,47,78,.12);
+      --hud-shadow:0 18px 54px rgba(35,47,78,.13);
+      --input:#ffffff;
+      --input-border:#d8ddea;
+      --node-text:#17234f;
+      --edge-muted:#6170a4;
+      --cross:#b62770;
+      --cross-label:#8e255d;
+      --notice-bg:#fff6e7;
+      --notice-border:#f1d7aa;
+      --notice-text:#7a571e;
+      --stage-glow:rgba(58,87,255,.10);
+    }
+    body[data-theme="dark"]{
+      --bg:#08090b;
+      --bg-2:#0d0e11;
+      --panel:rgba(17,18,22,.78);
+      --panel-strong:rgba(20,21,25,.96);
+      --panel-border:rgba(255,255,255,.10);
+      --text:#f1f1f3;
+      --muted:#a6a8b0;
+      --muted-2:#747780;
+      --accent:#8f8cff;
+      --accent-2:#54e1d6;
+      --danger:#ff6f9b;
+      --grid:#3a3e46;
+      --shadow:0 22px 90px rgba(0,0,0,.55);
+      --hud-shadow:0 18px 54px rgba(0,0,0,.45);
+      --input:#121318;
+      --input-border:#2b2e36;
+      --node-text:#f3f3f6;
+      --edge-muted:#6f789f;
+      --cross:#ff4fa0;
+      --cross-label:#ff9bc7;
+      --notice-bg:#19150f;
+      --notice-border:#5f4927;
+      --notice-text:#e4c487;
+      --stage-glow:rgba(114,104,255,.15);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;overflow-x:hidden}
+    body{
+      min-width:320px;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 30rem),
+        radial-gradient(circle at 86% 14%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 32rem),
+        linear-gradient(180deg,var(--bg-2),var(--bg));
+      transition:background .25s ease,color .25s ease;
+    }
+    button,input,textarea,select{font:inherit}
+    button{color:inherit}
+    .app{min-height:100vh;padding:18px}
+    .hero{max-width:1720px;margin:0 auto 14px;display:flex;gap:20px;align-items:flex-end;justify-content:space-between}
+    .hero h1{margin:6px 0 8px;font-size:clamp(1.7rem,3vw,3.4rem);line-height:1.28;color:var(--text);letter-spacing:-.025em}
+    .hero p{margin:0;max-width:940px;color:var(--muted);line-height:1.9}
+    .eyebrow{color:var(--accent-2);font-weight:900;letter-spacing:.01em}
+    .status{min-width:230px;padding:13px 15px;border:1px solid var(--panel-border);border-radius:18px;background:var(--panel);box-shadow:var(--hud-shadow);backdrop-filter:blur(18px)}
+    .status strong{display:block;color:var(--accent)}
+    .status small{display:block;margin-top:4px;color:var(--muted-2);direction:ltr}
+    .workspace{max-width:1720px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 318px;gap:14px;height:min(78vh,1050px)}
+    .stage{
+      position:relative;min-width:0;overflow:hidden;border:1px solid var(--panel-border);border-radius:28px;
+      background:
+        linear-gradient(135deg,color-mix(in srgb,var(--panel-strong) 72%,transparent),color-mix(in srgb,var(--bg) 82%,transparent)),
+        radial-gradient(circle at 50% 50%,var(--stage-glow),transparent 30rem);
+      box-shadow:var(--shadow);touch-action:none;
+    }
+    .stage::before{
+      content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+      background:linear-gradient(90deg,transparent 49.8%,color-mix(in srgb,var(--accent) 10%,transparent) 50%,transparent 50.2%),
+                 linear-gradient(0deg,transparent 49.8%,color-mix(in srgb,var(--accent) 8%,transparent) 50%,transparent 50.2%);
+      opacity:.28;
+    }
+    #map{display:block;width:100%;height:100%;user-select:none;position:relative;z-index:0}
+    .hud-stack{position:absolute;left:12px;top:12px;z-index:6;display:grid;gap:8px;max-width:260px}
+    .hud-card{
+      border:1px solid var(--panel-border);border-radius:15px;background:var(--panel);box-shadow:var(--hud-shadow);
+      backdrop-filter:blur(20px);overflow:hidden
+    }
+    .hud-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-bottom:1px solid var(--panel-border)}
+    .hud-head strong{font-size:11px;letter-spacing:.12em;direction:ltr;color:var(--muted)}
+    .hud-body{padding:9px 10px}
+    .hud-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .hud-btn,.toolbar button,.seg button{
+      border:1px solid var(--panel-border);border-radius:10px;background:var(--panel-strong);cursor:pointer;
+      transition:border-color .15s ease,transform .15s ease,background .15s ease;
+    }
+    .hud-btn:hover,.toolbar button:hover,.seg button:hover{border-color:color-mix(in srgb,var(--accent) 48%,var(--panel-border));transform:translateY(-1px)}
+    .hud-btn{min-width:38px;height:38px;padding:0 10px;font-weight:900}
+    .module-list{display:grid;gap:7px}
+    .module-row{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:7px 8px;border:1px solid var(--panel-border);
+      border-radius:10px;background:color-mix(in srgb,var(--panel-strong) 72%,transparent)
+    }
+    .module-row input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+    .module-row span{font-size:11px;font-weight:800}
+    .module-row small{font-size:9px;color:var(--muted-2);direction:ltr}
+    .subcontrols{display:grid;gap:6px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--panel-border)}
+    .subcontrols label{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted)}
+    .subcontrols input{accent-color:var(--accent)}
+    .theme-toggle{display:flex;gap:4px}
+    .theme-toggle button{min-width:70px}
+    .theme-toggle button.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent)}
+    .legend{position:absolute;right:12px;top:12px;padding:9px 11px;border:1px solid var(--panel-border);border-radius:13px;background:var(--panel);box-shadow:var(--hud-shadow);font-size:10px;z-index:5;backdrop-filter:blur(18px)}
+    .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
+    .legend-line{width:28px;height:2px;background:var(--edge-muted)}
+    .legend-line.cross{height:0;border-top:2px dashed var(--cross);background:none}
+    .inspector{height:100%;overflow:auto;padding:20px;border:1px solid var(--panel-border);border-radius:24px;background:var(--panel);box-shadow:var(--hud-shadow);backdrop-filter:blur(20px)}
+    .inspector h2{margin:7px 0 18px;font-size:1.15rem;line-height:1.6}
+    .inspector p{color:var(--muted);line-height:1.9}
+    .inspector label{display:grid;gap:7px;margin-bottom:14px;color:var(--muted);font-size:13px;font-weight:800}
+    .inspector textarea,.inspector input[type=number],.inspector select{width:100%;padding:10px 11px;border:1px solid var(--input-border);border-radius:11px;background:var(--input);color:var(--text)}
+    .inspector textarea{resize:vertical}
+    .inspector input[type=color]{width:100%;height:42px;border:0;background:transparent}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .check{display:flex!important;flex-direction:row;align-items:center;gap:9px!important;padding:9px 10px;border:1px solid var(--panel-border);border-radius:11px;background:color-mix(in srgb,var(--panel-strong) 70%,transparent)}
+    .meta{margin-top:10px;padding-top:14px;display:flex;justify-content:space-between;gap:10px;border-top:1px dashed var(--panel-border);color:var(--muted-2)}
+    .meta code{direction:ltr;color:var(--accent)}
+    .toolbar{max-width:1720px;margin:12px auto 0;padding:9px;display:flex;flex-wrap:wrap;gap:7px;border-radius:17px;background:var(--panel);border:1px solid var(--panel-border);box-shadow:var(--hud-shadow);backdrop-filter:blur(18px)}
+    .toolbar button{min-height:40px;padding:7px 13px}
+    .toolbar .primary{border-color:var(--accent);color:#fff;background:var(--accent)}
+    .toolbar .danger{margin-inline-start:auto;color:var(--danger)}
+    .footer{max-width:1720px;margin:10px auto 0;display:flex;justify-content:space-between;gap:20px;color:var(--muted-2);font-size:11px}
+    .hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    .notice{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--notice-bg);border:1px solid var(--notice-border);color:var(--notice-text);font-size:12px;line-height:1.8}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid var(--panel-border);border-radius:999px;font-size:9px;color:var(--muted);background:var(--panel-strong)}
+
+    .edge{fill:none;stroke-linecap:round;pointer-events:stroke;cursor:pointer;transition:opacity .18s ease,filter .18s ease}
+    .edge.hierarchy{opacity:.56}
+    .edge.cross{stroke:var(--cross);stroke-width:2.2;stroke-dasharray:10 13;opacity:.84;animation:dash 1.2s linear infinite}
+    .edge.selected{opacity:1!important;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--cross) 60%,transparent));stroke-width:4!important}
+    .edge.dimmed{opacity:.08!important}
+    @keyframes dash{to{stroke-dashoffset:-23}}
+    .node{cursor:grab;filter:drop-shadow(0 8px 16px rgba(32,45,86,.12));transition:opacity .18s ease}
+    body[data-theme="dark"] .node{filter:drop-shadow(0 10px 22px rgba(0,0,0,.34))}
+    .node:active{cursor:grabbing}
+    .node rect{stroke-width:1.4}
+    .node.macro rect{stroke-width:2.3}
+    .node.core rect{stroke-width:3}
+    .node.selected rect{stroke-width:4;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--accent) 48%,transparent))}
+    .node text{pointer-events:none;text-anchor:middle;dominant-baseline:middle;fill:var(--node-text);font-weight:800}
+    .node.core text{fill:#fff}
+    .node .kicker{font-size:10px;font-weight:900;opacity:.68}
+    .node.core .kicker{fill:#dbe6ff}
+    .node.dimmed{opacity:.10}
+    .node.context{opacity:.28}
+    .node.hidden{display:none}
+    .collapse-btn{cursor:pointer;pointer-events:all}
+    .collapse-btn circle{fill:var(--panel-strong);stroke:var(--panel-border);stroke-width:1.2}
+    .collapse-btn text{font-size:14px;font-weight:900;fill:var(--text)}
+    .background-dot{fill:var(--grid);opacity:.36}
+    .cross-label{font-size:11px;fill:var(--cross-label);paint-order:stroke;stroke:var(--bg-2);stroke-width:4px;stroke-linejoin:round;text-anchor:middle;pointer-events:none;transition:opacity .18s ease}
+    .cross-label.dimmed{opacity:.1}
+    .zoom-low .trend-node-render{opacity:0!important;pointer-events:none}
+    .zoom-low .trend-hierarchy{opacity:0!important;pointer-events:none}
+    .zoom-mid .trend-node-render{opacity:.42}
+    .zoom-mid .trend-node-render text{opacity:.55}
+    .zoom-mid .node .kicker{opacity:0}
+    .module-off-note{font-size:10px;color:var(--muted-2);padding:6px 2px 0}
+
+
+    .node.hover-dimmed{opacity:.08!important}
+    .edge.hover-dimmed{opacity:.06!important}
+    .cross-label.hover-dimmed{opacity:.08!important}
+    .node.hover-related rect{filter:drop-shadow(0 0 10px color-mix(in srgb,var(--accent) 30%,transparent))}
+    .edge.hover-related{opacity:1!important;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 35%,transparent))}
+    .search-card{display:none}
+    .search-card.is-visible{display:block}
+    .search-wrap{position:relative}
+    .search-input{width:100%;height:38px;padding:7px 10px;border:1px solid var(--input-border);border-radius:10px;background:var(--input);color:var(--text);outline:none}
+    .search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)}
+    .search-results{display:grid;gap:5px;margin-top:7px;max-height:220px;overflow:auto}
+    .search-result{width:100%;padding:7px 8px;text-align:right;border:1px solid var(--panel-border);border-radius:9px;background:color-mix(in srgb,var(--panel-strong) 82%,transparent);color:var(--text);cursor:pointer}
+    .search-result:hover{border-color:var(--accent)}
+    .search-result strong{display:block;font-size:10px;line-height:1.55}
+    .search-result small{display:block;margin-top:2px;color:var(--muted-2);font-size:8px;direction:ltr}
+    .search-empty{padding:8px;color:var(--muted-2);font-size:10px;text-align:center}
+    .mini-map{position:absolute;right:12px;bottom:12px;width:220px;height:150px;z-index:5;border:1px solid var(--panel-border);border-radius:14px;background:var(--panel);box-shadow:var(--hud-shadow);backdrop-filter:blur(16px);cursor:crosshair}
+    .mini-map.is-hidden{display:none}
+    .mini-node{fill:var(--muted-2);opacity:.38}
+    .mini-node.macro{opacity:.86}
+    .mini-node.core{fill:var(--accent);opacity:1}
+    .mini-view{fill:color-mix(in srgb,var(--accent) 8%,transparent);stroke:var(--accent);stroke-width:10;vector-effect:non-scaling-stroke}
+    .info-card{position:absolute;left:12px;bottom:12px;width:min(330px,calc(100% - 24px));z-index:5;display:none;padding:12px 13px;border:1px solid var(--panel-border);border-radius:14px;background:var(--panel);box-shadow:var(--hud-shadow);backdrop-filter:blur(18px)}
+    .info-card.is-visible{display:block}
+    .info-card .info-kicker{font-size:9px;letter-spacing:.12em;direction:ltr;color:var(--accent-2);font-weight:900}
+    .info-card h3{margin:5px 0 7px;font-size:13px;line-height:1.65}
+    .info-card p{margin:0;color:var(--muted);font-size:10px;line-height:1.75}
+    .info-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+    .info-meta span{padding:3px 6px;border:1px solid var(--panel-border);border-radius:999px;color:var(--muted-2);font-size:8px}
+
+
+    .layout-wide{min-width:154px}
+    .hud-btn:disabled{opacity:.38;cursor:not-allowed;transform:none}
+    .decor-orbit{fill:none;stroke:var(--panel-border);vector-effect:non-scaling-stroke}
+    .decor-spoke{stroke:var(--panel-border);stroke-width:1;opacity:.55;vector-effect:non-scaling-stroke}
+    .decor-petal{stroke-width:1.2;vector-effect:non-scaling-stroke}
+    .decor-core-ring{fill:none;stroke:color-mix(in srgb,var(--accent) 40%,transparent);filter:url(#softGlow)}
+    .macro-icon-badge{pointer-events:none}
+    .macro-icon-badge .icon-disc{fill:color-mix(in srgb,var(--panel-strong) 92%,transparent);stroke-width:1.4}
+    .macro-icon-badge .icon-shape{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .macro-index{font-size:9px!important;font-weight:900!important;letter-spacing:.08em;opacity:.56}
+    .node.macro rect{filter:drop-shadow(0 10px 20px color-mix(in srgb,var(--node-color,#5360ff) 12%,transparent))}
+    body[data-theme="dark"] .node.macro rect{filter:drop-shadow(0 10px 25px rgba(0,0,0,.4))}
+    .node.trend rect{stroke-opacity:.72}
+    .node.trend text{font-weight:720}
+    .node.core rect{filter:url(#microGlow)}
+    .layout-preview-pulse{animation:layoutPulse .55s ease}
+    @keyframes layoutPulse{0%{opacity:.45}100%{opacity:1}}
+
+    @media(max-width:980px){
+      .app{padding:10px}
+      .hero{align-items:stretch;flex-direction:column}
+      .status{width:100%;min-width:0}
+      .workspace{height:auto;grid-template-columns:minmax(0,1fr)}
+      .stage{height:68vh;min-height:540px;border-radius:20px}
+      .inspector{min-height:280px}
+      .toolbar button{flex:1 1 145px}
+      .toolbar .danger{margin-inline-start:0}
+      .footer{flex-direction:column;gap:5px}
+      .hud-stack{max-width:220px}
+      .legend{display:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <span class="eyebrow">FSInfo · modular static laboratory</span>
+        <h1>نقشه کلان‌روندهای آینده حوزه‌های علمیه</h1>
+        <p>نسخه آزمایشی ماژولار بدون Build؛ تمرکز این نسخه روی حذف هم‌پوشانی، آیکون‌های برداری و کیفیت بصری اینفوگرافیک است؛ قابلیت‌ها همچنان برگشت‌پذیر و ماژولارند.</p>
+      </div>
+      <div class="status">
+        <strong>Static infographic · v0.4</strong>
+        <small>single-file / no-build / reversible features</small>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <div class="stage" id="stage">
+        <svg id="map" viewBox="0 0 4000 3000" aria-label="نقشه تعاملی کلان‌روندها">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L8,4 L0,8 Z" fill="currentColor"></path>
+            </marker>
+            <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle class="background-dot" cx="1.2" cy="1.2" r="1"></circle>
+            </pattern>
+            <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="14" result="blur"></feGaussianBlur>
+              <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+            </filter>
+            <filter id="microGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+              <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+            </filter>
+          </defs>
+          <rect id="panSurface" x="-6000" y="-6000" width="12000" height="12000" fill="url(#dots)"></rect>
+          <g id="viewport">
+            <g id="decorations"></g>
+            <g id="edges"></g>
+            <g id="edgeLabels"></g>
+            <g id="nodes"></g>
+          </g>
+        </svg>
+
+        <div class="hud-stack">
+          <section class="hud-card">
+            <div class="hud-head"><strong>NAV / VIEW</strong><span class="badge" id="zoomBadge">100%</span></div>
+            <div class="hud-body">
+              <div class="hud-actions">
+                <button class="hud-btn" id="zoomIn" title="بزرگ‌نمایی">+</button>
+                <button class="hud-btn" id="zoomOut" title="کوچک‌نمایی">−</button>
+                <button class="hud-btn" id="fit" title="نمایش کامل">⌂</button>
+              </div>
+              <div class="theme-toggle" style="margin-top:8px">
+                <button class="hud-btn" id="themeLight">روشن</button>
+                <button class="hud-btn" id="themeDark">تاریک</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="hud-card">
+            <div class="hud-head"><strong>FEATURE MODULES</strong><span class="badge">9/15 + ICON</span></div>
+            <div class="hud-body">
+              <div class="module-list" id="moduleList"></div>
+              <div id="relationSubcontrols"></div>
+            </div>
+          </section>
+
+          <section class="hud-card">
+            <div class="hud-head"><strong>LAYOUT ENGINE</strong><span class="badge" id="overlapBadge">—</span></div>
+            <div class="hud-body">
+              <div class="hud-actions">
+                <button class="hud-btn layout-wide" id="layoutPreview">چیدمان بدون هم‌پوشانی</button>
+                <button class="hud-btn" id="layoutApply" disabled>اعمال</button>
+                <button class="hud-btn" id="layoutRestore" disabled>بازگشت</button>
+              </div>
+              <div class="module-off-note">Preview ابتدا یک snapshot می‌گیرد؛ Apply آن را نگه می‌دارد و Restore به هندسه قبل برمی‌گرداند.</div>
+            </div>
+          </section>
+
+          <section class="hud-card search-card" id="searchPanel">
+            <div class="hud-head"><strong>SEARCH / LOCATE</strong><span class="badge">⌕</span></div>
+            <div class="hud-body search-wrap">
+              <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="جست‌وجوی روند یا کلان‌روند…" />
+              <div id="searchResults" class="search-results"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="legend">
+          <div><span class="legend-line"></span><span>رابطه درون‌خوشه‌ای</span></div>
+          <div><span class="legend-line cross"></span><span>رابطه متقاطع اولیه</span></div>
+        </div>
+        <svg id="miniMap" class="mini-map" viewBox="0 0 4000 3000" aria-label="نمای کلی نقشه">
+          <rect x="0" y="0" width="4000" height="3000" fill="transparent"></rect>
+          <g id="miniNodes"></g>
+          <rect id="miniViewport" class="mini-view" x="0" y="0" width="4000" height="3000"></rect>
+        </svg>
+        <div id="infoCard" class="info-card" aria-live="polite"></div>
+      </div>
+
+      <aside class="inspector" id="inspector">
+        <span class="eyebrow">ویرایشگر</span>
+        <h2>یک گره یا رابطه را انتخاب کنید</h2>
+        <p>گره‌ها را مستقیم روی نقشه جابه‌جا کنید. رفتار نمایشی از HUD سمت چپ قابل کنترل است.</p>
+        <div class="notice">روابط متقاطع فعلی نمونه اولیه‌اند و تا ثبت شاهد و تأیید پژوهشی نباید یافته نهایی تلقی شوند.</div>
+      </aside>
+    </section>
+
+    <nav class="toolbar" aria-label="ابزارهای ویرایش">
+      <button id="save">ذخیره در مرورگر</button>
+      <button id="importBtn">ورود JSON</button>
+      <input id="importFile" class="hidden" type="file" accept=".json,application/json" />
+      <button id="exportJson">خروجی JSON</button>
+      <button id="exportSvg" class="primary">خروجی SVG</button>
+      <button id="reset" class="danger">بازنشانی</button>
+    </nav>
+
+    <footer class="footer">
+      <span>نسخه قبلی دست‌نخورده: <code dir="ltr">index.html</code> · نسخه قبلی: <code dir="ltr">index-v0.3-modular.html</code> · این نسخه: <code dir="ltr">index-v0.4-infographic.html</code></span>
+      <span>Vazirmatn-first font stack · Light/Dark HUD theme · بدون dependency خارجی</span>
+    </footer>
+  </main>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const VERSION = '0.4-infographic';
+    const STORAGE_KEY = 'fsinfo-static-v0.4-data';
+    const CONFIG_KEY = 'fsinfo-static-v0.4-config';
+    const VIEW_W = 4000, VIEW_H = 3000;
+    const center = { x: 2000, y: 1500 };
+    const macroRx = 1120, macroRy = 780;
+
+    /*
+      Module contract:
+      - type: toggle | action | strategy | theme
+      - enabled state lives only in config.features
+      - a module may affect visibility/presentation, never mutate graph data unless explicitly an action
+      - action/strategy modules added later must support preview + restore snapshot
+    */
+    const FEATURE_DEFS = {
+      semanticZoom: {
+        label:'زوم معنایی',
+        tag:'VIEW',
+        default:true,
+        description:'جزئیات متناسب با زوم کم و زیاد می‌شوند'
+      },
+      focusMode: {
+        label:'حالت تمرکز',
+        tag:'FOCUS',
+        default:true,
+        description:'خوشه انتخاب‌شده برجسته و بقیه محو می‌شوند'
+      },
+      clusterCollapse: {
+        label:'جمع/باز کردن خوشه',
+        tag:'CLUSTER',
+        default:true,
+        description:'زیرروندهای هر کلان‌روند مستقل جمع می‌شوند'
+      },
+      relationFilter: {
+        label:'فیلتر رابطه‌ها',
+        tag:'EDGE',
+        default:true,
+        description:'نمایش hierarchy/cross/verified قابل کنترل است'
+      },
+      hoverIntelligence: {
+        label:'Hover هوشمند',
+        tag:'HOVER',
+        default:true,
+        description:'نود و روابط متصل هنگام اشاره برجسته می‌شوند'
+      },
+      search: {
+        label:'جست‌وجوی سریع',
+        tag:'SEARCH',
+        default:true,
+        description:'پیدا کردن نود و پرش مستقیم به آن'
+      },
+      miniMap: {
+        label:'مینی‌مپ',
+        tag:'MAP',
+        default:true,
+        description:'نمای کلی نقشه و موقعیت viewport'
+      },
+      infoCard: {
+        label:'کارت اطلاعات شناور',
+        tag:'INFO',
+        default:true,
+        description:'اطلاعات نود یا رابطه در hover/selection'
+      },
+      infographicLayers: {
+        label:'لایه اینفوگرافیک',
+        tag:'VISUAL',
+        default:true,
+        description:'حلقه‌ها، پتال‌های خوشه‌ای و عمق بصری پس‌زمینه'
+      },
+      macroIcons: {
+        label:'آیکون کلان‌روندها',
+        tag:'ICON',
+        default:true,
+        description:'آیکون‌های برداری مستقل و قابل تعویض روی سرشاخه‌ها'
+      }
+    };
+
+    const clusters = [
+      {id:'MT01',title:'مدیریت جمعیت‌شناسی',color:'#FFD94A',icon:'population',trends:['سالمندی / میانسالی','طبقه پرجمعیت جدید','جایگزینی مراجع جدید و تحول فرایند مرجعیت و تقلید','خانواده‌گرایی','جمعیت و باروری','مهاجرت']},
+      {id:'MT02',title:'ساختارهای متحول قدرت در جهان آینده',color:'#C8A866',icon:'power',trends:['انتقال قدرت از غرب به شرق','اجتماع‌محوری','محلی‌گرایی','ظهور بیشتر نهادهای علمی‌دینی عراق','افزایش انسجام شیعی در منطقه']},
+      {id:'MT03',title:'هوش مصنوعی و داده‌محوری',color:'#5A62FF',icon:'ai',trends:['تصمیم‌گیری داده‌محور','هوش مصنوعی اجتهاد','هوش مصنوعی دینی','دستیاران مجازی روحانی','فناوری زنجیره بلوکی (بلاک‌چین)']},
+      {id:'MT04',title:'تحول علم و معرفت',color:'#2F9CFF',icon:'knowledge',trends:['دیجیتالی‌شدن نظام دانش','علم ۲ (باز و مشارکتی)','علوم محاسباتی','علوم شناختی','فناوری به جای علم','کاربردی‌شدن','آموزش شخصی‌سازی‌شده','آموزش مادام‌العمر','یادگیری حین اقدام','گسترش میان‌رشته‌گی']},
+      {id:'MT05',title:'معنویت‌گرایی',color:'#B8F34A',icon:'spirit',trends:['واگرایی، تنوع و تکثر دینی','افول سکولاریسم','معنویت‌گرایی‌های نوین دینی','تکنولوژی‌های معنویت','اقتصاد معنویت','تعامل عمیق','مشاغل مرتبط با معنا و روح']},
+      {id:'MT06',title:'تحول شناختی دین',color:'#A48BFF',icon:'cognition',trends:['اصل ساده‌سازی ـ دین ساده‌سازی‌شده','دین تصویری و نمادگرایانه','مونتاژ، کولاژ و شخصی‌سازی دینی','دینداری بدون مقام','دلبستگی به‌جای ایمان','دین به‌مثابه درمانگر (مراقبت معنوی)','دینداری به معنای خدمت‌رسانی','جایگزینی داده به‌جای معرفت','فناوری‌های شناختی']},
+      {id:'MT07',title:'شهرنشینی',color:'#62DF79',icon:'city',trends:['تبلیغ مسئله‌محور','طلبگی شهروندی','دین در عصر آسیب‌های اجتماعی']},
+      {id:'MT08',title:'زنانه‌شدن',color:'#EE8CAC',icon:'women',trends:['رشد طلاب خواهر','دین برای زنان (زن و خانواده به‌عنوان مخاطب کلیدی)','رشد زنانگی']},
+      {id:'MT09',title:'عصر بی‌نظمی',color:'#D05B89',icon:'disorder',trends:['بی‌اعتمادی فزاینده','مشارکتی شدن دین']},
+      {id:'MT10',title:'مهارت‌های آینده',color:'#FFB84D',icon:'skills',trends:['عصر خلاقیت و کارآفرینی','مهارت‌محور شدن آموزش','بازاریابی محتوای دینی (اقتصاد توجه)','هم‌آفرینی خدمت‌رسانی دینی','روح زمانه بصری']},
+      {id:'MT11',title:'سبک زندگی سالم',color:'#67D6B0',icon:'health',trends:['پزشکی‌شدن همه‌چیز','اولویت پیشگیری','سلامت همه‌جانبه ـ سلامت معنوی','مراقبت بهداشتی خوداتکا']},
+      {id:'MT12',title:'تاب‌آوری',color:'#45C58A',icon:'resilience',trends:['تغییرات اقلیم و زیست‌محیط','توسعه پایدار','پایداری به‌عنوان اخلاق حسنه یا دین','الهیات تاب‌آوری','روایت‌گری امید فعال','الهیات آسیب‌پذیری','بازکشف ثروت‌های تمدنی']},
+      {id:'MT13',title:'تحول حکمرانی',color:'#7D8BFF',icon:'governance',trends:['شفافیت','غیررسمی‌شدن','تمرکززدایی','گواهی‌گرایی','سازمان‌های چابک','یادگیری پیوسته و یادگیری حین عمل','شاملیت و تنوع','حوزه فراگیر','حکمرانی الگوریتمی','چالش توزیع در حکمرانی (مرحله اجرا)']},
+      {id:'MT14',title:'تحول زیست‌فناورانه',color:'#77C6FF',icon:'biotech',trends:['انسان سایبورگ','بهینه‌سازی ژنتیک تولید نسل']}
+    ];
+
+    const ICON_LIBRARY = {
+      none:{label:'بدون آیکون',svg:''},
+      population:{label:'جمعیت',svg:'<circle cx="9" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.3"/><path d="M3.5 19c.7-4 3-6 5.5-6s4.8 2 5.5 6"/><path d="M14 14c2.8.2 4.8 1.8 5.5 5"/>'},
+      power:{label:'قدرت / قطب‌ها',svg:'<circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/><path d="m12 7 2.8 2.2L12 17 9.2 14.8Z"/>'},
+      ai:{label:'هوش مصنوعی',svg:'<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M18 9h4M2 15h4M18 15h4"/><circle cx="10" cy="11" r="1"/><circle cx="14" cy="11" r="1"/><path d="M9.5 15c1.5 1 3.5 1 5 0"/>'},
+      knowledge:{label:'دانش',svg:'<path d="M4 5.5c3-1.3 5.7-.9 8 1.2v12c-2.3-2.1-5-2.5-8-1.2Z"/><path d="M20 5.5c-3-1.3-5.7-.9-8 1.2v12c2.3-2.1 5-2.5 8-1.2Z"/>'},
+      spirit:{label:'معنویت',svg:'<path d="M12 2l1.7 5.1L19 9l-5.3 1.9L12 16l-1.7-5.1L5 9l5.3-1.9Z"/><path d="M5 17l.8 2.2L8 20l-2.2.8L5 23l-.8-2.2L2 20l2.2-.8Z"/>'},
+      cognition:{label:'شناخت',svg:'<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="12" cy="16" r="3"/><path d="M10.4 9.7 11 13M13.6 9.7 13 13M9.5 15h5"/>'},
+      city:{label:'شهر',svg:'<path d="M3 21V9h7v12M10 21V4h8v17M18 21v-8h3v8"/><path d="M6 12h1M6 15h1M13 8h2M13 11h2M13 14h2"/>'},
+      women:{label:'زنان / خانواده',svg:'<circle cx="12" cy="8" r="4"/><path d="M12 12v9M8.5 17h7"/>'},
+      disorder:{label:'بی‌نظمی',svg:'<path d="M3 7c3-4 5 4 8 0s5 4 10 0M3 13c3-4 5 4 8 0s5 4 10 0M3 19c3-4 5 4 8 0s5 4 10 0"/>'},
+      skills:{label:'مهارت',svg:'<path d="m14 5 5 5-9 9H5v-5Z"/><path d="m13 6 2-2 5 5-2 2M5 14l5 5"/>'},
+      health:{label:'سلامت',svg:'<path d="M12 21S4 16.2 4 9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 3.5C20 16.2 12 21 12 21Z"/><path d="M9 11h6M12 8v6"/>'},
+      resilience:{label:'تاب‌آوری',svg:'<path d="M12 3 20 6v5c0 5.2-3.2 8.7-8 10-4.8-1.3-8-4.8-8-10V6Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/>'},
+      governance:{label:'حکمرانی',svg:'<circle cx="12" cy="5" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M12 7v5M7 17l5-5 5 5M5 16v-3h14v3"/>'},
+      biotech:{label:'زیست‌فناوری',svg:'<path d="M7 3c6 3 4 7 10 10M17 3C11 6 13 10 7 13M7 13c6 3 4 5 10 8M17 13c-6 3-4 5-10 8"/><path d="M9 6h6M9 18h6"/>'}
+    };
+
+    const crossSeed = [
+      {id:'X-1',source:'MT03',target:'MT10',label:'هوش مصنوعی ← مهارت‌های آینده',kind:'cross',verified:false,evidence:''},
+      {id:'X-2',source:'MT03',target:'MT04',label:'هوش مصنوعی ← تحول دانش',kind:'cross',verified:false,evidence:''},
+      {id:'X-3',source:'MT07',target:'MT06',label:'شهرنشینی ← تحول شناختی دین',kind:'cross',verified:false,evidence:''}
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const svg = $('map'), viewport = $('viewport'), decorationsLayer = $('decorations'), nodesLayer = $('nodes'), edgesLayer = $('edges'), labelsLayer = $('edgeLabels');
+    const inspector = $('inspector'), stage = $('stage');
+    const searchPanel = $('searchPanel'), searchInput = $('searchInput'), searchResults = $('searchResults');
+    const miniMap = $('miniMap'), miniNodes = $('miniNodes'), miniViewport = $('miniViewport');
+    const infoCard = $('infoCard');
+    const overlapBadge = $('overlapBadge'), layoutPreviewBtn = $('layoutPreview'), layoutApplyBtn = $('layoutApply'), layoutRestoreBtn = $('layoutRestore');
+
+    let state = makeInitialState();
+    let selected = null;
+    let transform = { x: 0, y: 0, scale: 1 };
+    let drag = null;
+    let pan = null;
+    let layoutBackup = null;
+    let layoutPreviewActive = false;
+
+    const config = loadConfig();
+    const collapsed = new Set(config.collapsed || []);
+
+    function defaultFeatures(){
+      return Object.fromEntries(Object.entries(FEATURE_DEFS).map(([key,def])=>[key,def.default]));
+    }
+
+    function loadConfig(){
+      const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const base = {
+        theme: systemDark ? 'dark' : 'light',
+        features: defaultFeatures(),
+        relation: { hierarchy:true, cross:true, verifiedOnly:false },
+        collapsed:[]
+      };
+      try{
+        const parsed = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}');
+        return {
+          ...base,
+          ...parsed,
+          features:{...base.features,...(parsed.features||{})},
+          relation:{...base.relation,...(parsed.relation||{})}
+        };
+      }catch(_){ return base; }
+    }
+
+    function saveConfig(){
+      config.collapsed=[...collapsed];
+      localStorage.setItem(CONFIG_KEY,JSON.stringify(config));
+    }
+
+    function feature(name){ return config.features[name] !== false; }
+
+    function makeInitialState(){
+      const nodes = [{
+        id:'CORE',x:center.x,y:center.y,w:230,h:150,label:'حوزه آینده',level:'core',color:'#354BFF',textSize:28,macroId:null,icon:null
+      }];
+      const edges = [];
+      clusters.forEach((cluster,index)=>{
+        const angle = index / clusters.length * Math.PI * 2 - Math.PI/2;
+        const mx = center.x + Math.cos(angle)*macroRx;
+        const my = center.y + Math.sin(angle)*macroRy;
+        nodes.push({id:cluster.id,x:mx,y:my,w:205,h:105,label:cluster.title,level:'macro',color:cluster.color,textSize:18,macroId:cluster.id,icon:cluster.icon});
+        edges.push({id:'CORE-'+cluster.id,source:'CORE',target:cluster.id,kind:'hierarchy',label:'',verified:true,evidence:'',color:cluster.color,width:2.2});
+        const spread = Math.max(1,cluster.trends.length-1);
+        cluster.trends.forEach((trend,ti)=>{
+          const fan=(ti/spread-.5)*1.55;
+          const outward=angle+fan;
+          const radius=235+(ti%2)*42;
+          const id=cluster.id+'-T'+String(ti+1).padStart(2,'0');
+          nodes.push({id,x:mx+Math.cos(outward)*radius,y:my+Math.sin(outward)*radius,w:175,h:68,label:trend,level:'trend',color:cluster.color,textSize:13,macroId:cluster.id,icon:null});
+          edges.push({id:cluster.id+'-'+id,source:cluster.id,target:id,kind:'hierarchy',label:'',verified:true,evidence:'',color:cluster.color,width:1.6});
+        });
+      });
+      crossSeed.forEach(e=>edges.push({...e,color:'#B62770',width:2.2}));
+      return {version:VERSION,nodes,edges};
+    }
+
+    function loadData(){
+      try{
+        const raw=localStorage.getItem(STORAGE_KEY);
+        if(!raw)return false;
+        const parsed=JSON.parse(raw);
+        if(Array.isArray(parsed.nodes)&&Array.isArray(parsed.edges)){state=parsed;return true}
+      }catch(_){}
+      return false;
+    }
+
+    function saveData(){
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      flash('ذخیره شد');
+    }
+
+    function nodeById(id){ return state.nodes.find(n=>n.id===id); }
+    function macroForNode(n){ return !n ? null : (n.level==='macro' ? n.id : n.macroId); }
+
+    function focusSet(){
+      if(!feature('focusMode') || !selected || selected.type!=='node') return null;
+      const n=nodeById(selected.id);
+      const macro=macroForNode(n);
+      if(!macro) return new Set(['CORE']);
+      return new Set(['CORE',macro,...state.nodes.filter(x=>x.macroId===macro).map(x=>x.id)]);
+    }
+
+    function nodeVisible(n){
+      if(feature('clusterCollapse') && n.level==='trend' && collapsed.has(n.macroId)) return false;
+      return true;
+    }
+
+    function relationVisible(e){
+      if(feature('clusterCollapse')){
+        const a=nodeById(e.source), b=nodeById(e.target);
+        if((a?.level==='trend'&&collapsed.has(a.macroId)) || (b?.level==='trend'&&collapsed.has(b.macroId))) return false;
+      }
+      if(!feature('relationFilter')) return true;
+      if(e.kind==='hierarchy' && !config.relation.hierarchy) return false;
+      if(e.kind!=='hierarchy' && !config.relation.cross) return false;
+      if(config.relation.verifiedOnly && !e.verified) return false;
+      return true;
+    }
+
+    function mix(hex, amount=.88){
+      const c=String(hex||'#5360ff').replace('#','');
+      const n=parseInt(c,16);
+      const r=n>>16,g=n>>8&255,b=n&255;
+      const dark=document.body.dataset.theme==='dark';
+      const target=dark?20:255;
+      const blend=dark?Math.min(.58,amount*.65):amount;
+      const nr=Math.round(r*(1-blend)+target*blend);
+      const ng=Math.round(g*(1-blend)+target*blend);
+      const nb=Math.round(b*(1-blend)+target*blend);
+      return '#'+[nr,ng,nb].map(v=>v.toString(16).padStart(2,'0')).join('');
+    }
+
+    function escapeXml(s){
+      return String(s).replace(/[<>&"']/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[ch]));
+    }
+
+    function wrap(label,max){
+      const words=String(label).trim().split(/\s+/);
+      const lines=[]; let line='';
+      words.forEach(word=>{
+        const test=line?line+' '+word:word;
+        if(test.length>max&&line){lines.push(line);line=word}else line=test;
+      });
+      if(line)lines.push(line);
+      return lines.slice(0,4);
+    }
+
+    function render(){
+      decorationsLayer.innerHTML='';
+      edgesLayer.innerHTML='';
+      labelsLayer.innerHTML='';
+      nodesLayer.innerHTML='';
+      renderDecorations();
+      const focused=focusSet();
+
+      state.edges.forEach(e=>{
+        if(!relationVisible(e)) return;
+        const a=nodeById(e.source), b=nodeById(e.target);
+        if(!a||!b||!nodeVisible(a)||!nodeVisible(b))return;
+        const start=edgeAnchor(a,b), end=edgeAnchor(b,a);
+        const dx=end.x-start.x, dy=end.y-start.y;
+        const bend=e.kind==='cross'?.20:.055;
+        const cx=(start.x+end.x)/2-dy*bend;
+        const cy=(start.y+end.y)/2+dx*bend;
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+        const isTrendHierarchy=e.kind==='hierarchy' && (a.level==='trend'||b.level==='trend');
+        const dim=focused && !(focused.has(a.id)&&focused.has(b.id));
+        path.setAttribute('d',`M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`);
+        path.setAttribute('class','edge '+(e.kind==='cross'?'cross':'hierarchy')+(isTrendHierarchy?' trend-hierarchy':'')+(dim?' dimmed':'')+(selected?.type==='edge'&&selected.id===e.id?' selected':''));
+        path.setAttribute('stroke',e.kind==='cross'?'var(--cross)':(e.color||'var(--edge-muted)'));
+        path.setAttribute('stroke-width',e.width||2);
+        if(e.kind!=='hierarchy')path.setAttribute('marker-end','url(#arrow)');
+        path.dataset.id=e.id;
+        path.dataset.source=e.source;
+        path.dataset.target=e.target;
+        path.addEventListener('pointerdown',ev=>{ev.stopPropagation();selectEdge(e.id)});
+        path.addEventListener('pointerenter',()=>{ if(feature('hoverIntelligence')) applyHoverEdge(e); if(feature('infoCard')) showEdgeInfo(e); });
+        path.addEventListener('pointerleave',()=>{ clearHoverIntelligence(); updateInfoCard(); });
+        edgesLayer.appendChild(path);
+
+        if(e.label&&e.kind!=='hierarchy'){
+          const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+          t.setAttribute('x',cx);t.setAttribute('y',cy-8);
+          t.setAttribute('class','cross-label'+(dim?' dimmed':''));
+          t.dataset.id=e.id;
+          t.textContent=e.label;labelsLayer.appendChild(t);
+        }
+      });
+
+      state.nodes.forEach(n=>{
+        if(!nodeVisible(n)) return;
+        const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+        const dim=focused && !focused.has(n.id);
+        const isContext=focused && n.id==='CORE';
+        g.setAttribute('class','node '+n.level+(n.level==='trend'?' trend-node-render':'')+(selected?.type==='node'&&selected.id===n.id?' selected':'')+(dim?' dimmed':'')+(isContext?' context':''));
+        g.setAttribute('transform',`translate(${n.x},${n.y})`);
+        g.style.setProperty('--node-color',n.color||'#5360ff');
+        g.dataset.id=n.id;
+
+        const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute('x',-n.w/2);rect.setAttribute('y',-n.h/2);
+        rect.setAttribute('width',n.w);rect.setAttribute('height',n.h);
+        rect.setAttribute('rx',n.level==='core'?75:n.level==='macro'?52:18);
+        rect.setAttribute('fill',n.level==='core'?'#2944ef':mix(n.color,.84));
+        rect.setAttribute('stroke',n.level==='core'?'#5568ff':n.color);
+        g.appendChild(rect);
+
+        if(feature('macroIcons') && n.level==='macro' && n.icon && ICON_LIBRARY[n.icon]){
+          const iconG=document.createElementNS('http://www.w3.org/2000/svg','g');
+          iconG.setAttribute('class','macro-icon-badge');
+          iconG.setAttribute('transform',`translate(${-n.w/2+28},0)`);
+          iconG.setAttribute('color',n.color);
+          const disc=document.createElementNS('http://www.w3.org/2000/svg','circle');
+          disc.setAttribute('class','icon-disc');disc.setAttribute('r','19');disc.setAttribute('stroke',n.color);
+          iconG.appendChild(disc);
+          const shape=document.createElementNS('http://www.w3.org/2000/svg','g');
+          shape.setAttribute('class','icon-shape');
+          shape.setAttribute('transform','translate(-11 -11) scale(.92)');
+          shape.innerHTML=ICON_LIBRARY[n.icon].svg;
+          iconG.appendChild(shape);
+          g.appendChild(iconG);
+        }
+
+        const kicker=document.createElementNS('http://www.w3.org/2000/svg','text');
+        kicker.setAttribute('class','kicker');
+        kicker.setAttribute('y',-Math.min(22,n.h*.24));
+        kicker.textContent=n.level==='core'?'هسته':n.level==='macro'?'کلان‌روند':'روند';
+        g.appendChild(kicker);
+
+        const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+        text.setAttribute('font-size',n.textSize||14);
+        const max=n.level==='trend'?23:n.level==='macro'?26:18;
+        const lines=wrap(n.label,max);
+        const lineH=(n.textSize||14)*1.35;
+        const startY=(lines.length-1)*lineH/-2 + (n.level==='trend'?7:8);
+        lines.forEach((line,i)=>{
+          const sp=document.createElementNS('http://www.w3.org/2000/svg','tspan');
+          sp.setAttribute('x',n.level==='macro'&&feature('macroIcons')?'10':'0');sp.setAttribute('y',String(startY+i*lineH));
+          sp.textContent=line;text.appendChild(sp);
+        });
+        g.appendChild(text);
+
+        if(n.level==='macro'){
+          const indexText=document.createElementNS('http://www.w3.org/2000/svg','text');
+          indexText.setAttribute('class','macro-index');
+          indexText.setAttribute('x',String(n.w/2-26));
+          indexText.setAttribute('y',String(n.h/2-15));
+          indexText.textContent=n.id;
+          g.appendChild(indexText);
+        }
+
+        if(feature('clusterCollapse') && n.level==='macro'){
+          const c=document.createElementNS('http://www.w3.org/2000/svg','g');
+          c.setAttribute('class','collapse-btn');
+          c.setAttribute('transform',`translate(${n.w/2-12},${-n.h/2+12})`);
+          const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+          circle.setAttribute('r','13'); c.appendChild(circle);
+          const ct=document.createElementNS('http://www.w3.org/2000/svg','text');
+          ct.setAttribute('y','1');ct.textContent=collapsed.has(n.id)?'+':'−';c.appendChild(ct);
+          c.addEventListener('pointerdown',ev=>{ev.stopPropagation()});
+          c.addEventListener('click',ev=>{ev.stopPropagation();toggleCluster(n.id)});
+          g.appendChild(c);
+        }
+
+        g.addEventListener('pointerdown',ev=>beginNodeDrag(ev,n.id));
+        g.addEventListener('click',ev=>{ev.stopPropagation();selectNode(n.id)});
+        g.addEventListener('pointerenter',()=>{ if(feature('hoverIntelligence')) applyHoverNode(n.id); if(feature('infoCard')) showNodeInfo(n.id); });
+        g.addEventListener('pointerleave',()=>{ clearHoverIntelligence(); updateInfoCard(); });
+        nodesLayer.appendChild(g);
+      });
+
+      applyTransform();
+      applySemanticZoom();
+      updateSearchModule();
+      updateMiniMap();
+      updateInfoCard();
+      renderLayoutPanel();
+    }
+
+    function selectNode(id){selected={type:'node',id};render();renderInspector();updateInfoCard()}
+    function selectEdge(id){selected={type:'edge',id};render();renderInspector();updateInfoCard()}
+    function clearSelection(){selected=null;render();renderInspector();updateInfoCard()}
+
+    function toggleCluster(id){
+      if(collapsed.has(id))collapsed.delete(id);else collapsed.add(id);
+      saveConfig();render();
+    }
+
+    function renderInspector(){
+      if(!selected){
+        inspector.innerHTML='<span class="eyebrow">ویرایشگر</span><h2>یک گره یا رابطه را انتخاب کنید</h2><p>گره‌ها را مستقیم روی نقشه جابه‌جا کنید. چهار ماژول نمایشی از HUD سمت چپ مستقل روشن/خاموش می‌شوند.</p><div class="notice">روابط متقاطع فعلی نمونه اولیه‌اند و تا ثبت شاهد و تأیید پژوهشی نباید یافته نهایی تلقی شوند.</div>';
+        return;
+      }
+      if(selected.type==='node'){
+        const n=nodeById(selected.id);if(!n)return;
+        const iconOptions=Object.entries(ICON_LIBRARY).map(([key,val])=>'<option value="'+key+'">'+escapeXml(val.label)+'</option>').join('');
+        const iconEditor=n.level==='macro' ? '<label>آیکون سرشاخه<select id="nIcon">'+iconOptions+'</select></label>' : '';
+        inspector.innerHTML=`
+          <span class="eyebrow">ویرایشگر گره</span>
+          <h2>${escapeXml(n.label)}</h2>
+          <label>متن<textarea id="nLabel" rows="3">${escapeXml(n.label)}</textarea></label>
+          <div class="grid">
+            <label>رنگ<input id="nColor" type="color" value="${n.color}"></label>
+            <label>اندازه متن<input id="nText" type="number" min="10" max="42" value="${n.textSize}"></label>
+            <label>عرض<input id="nW" type="number" min="100" max="480" value="${n.w}"></label>
+            <label>ارتفاع<input id="nH" type="number" min="52" max="280" value="${n.h}"></label>
+          </div>
+          ${iconEditor}
+          <div class="meta"><span>شناسه</span><code>${n.id}</code></div>`;
+        bind('nLabel','input',v=>n.label=v);
+        bind('nColor','input',v=>n.color=v);
+        bind('nText','input',v=>n.textSize=+v);
+        bind('nW','input',v=>n.w=+v);
+        bind('nH','input',v=>n.h=+v);
+        if(n.level==='macro'){
+          $('nIcon').value=n.icon||'none';
+          bind('nIcon','change',v=>n.icon=v==='none'?null:v);
+        }
+      }else{
+        const e=state.edges.find(x=>x.id===selected.id);if(!e)return;
+        inspector.innerHTML=`
+          <span class="eyebrow">ویرایشگر رابطه</span>
+          <h2>${escapeXml(e.label||'رابطه بدون برچسب')}</h2>
+          <label>برچسب<textarea id="eLabel" rows="3">${escapeXml(e.label||'')}</textarea></label>
+          <label>شاهد / یادداشت پژوهشی<textarea id="eEvidence" rows="4" placeholder="متن شاهد، صفحه منبع یا توضیح اعتبار رابطه">${escapeXml(e.evidence||'')}</textarea></label>
+          <div class="grid">
+            <label>رنگ<input id="eColor" type="color" value="${e.color||'#b62770'}"></label>
+            <label>ضخامت<input id="eWidth" type="number" min="1" max="12" step=".5" value="${e.width||2}"></label>
+          </div>
+          <label>نوع رابطه
+            <select id="eKind">
+              <option value="hierarchy">درون‌خوشه‌ای</option>
+              <option value="cross">متقاطع</option>
+              <option value="reinforces">تقویت‌کننده</option>
+              <option value="inhibits">بازدارنده</option>
+              <option value="possible_effect">اثر احتمالی</option>
+            </select>
+          </label>
+          <label class="check"><input id="eVerified" type="checkbox" ${e.verified?'checked':''}><span>رابطه پژوهشی تأیید شده است</span></label>
+          <div class="meta"><span>شناسه یال</span><code>${e.id}</code></div>`;
+        $('eKind').value=e.kind;
+        bind('eLabel','input',v=>e.label=v);
+        bind('eEvidence','input',v=>e.evidence=v,false);
+        bind('eColor','input',v=>e.color=v);
+        bind('eWidth','input',v=>e.width=+v);
+        bind('eKind','change',v=>e.kind=v);
+        $('eVerified').addEventListener('change',ev=>{e.verified=ev.target.checked;render()});
+      }
+    }
+
+    function bind(id,event,fn,rerender=true){
+      $(id).addEventListener(event,ev=>{fn(ev.target.value);if(rerender)render()});
+    }
+
+    function renderModulePanel(){
+      $('moduleList').innerHTML='';
+      Object.entries(FEATURE_DEFS).forEach(([key,def])=>{
+        const row=document.createElement('label');
+        row.className='module-row';
+        row.title=def.description;
+        row.innerHTML=`<input type="checkbox" data-feature="${key}" ${feature(key)?'checked':''}><span>${def.label}</span><small>${def.tag}</small>`;
+        row.querySelector('input').addEventListener('change',ev=>{
+          config.features[key]=ev.target.checked;
+          if(key==='clusterCollapse' && !ev.target.checked) collapsed.clear();
+          saveConfig();render();renderModulePanel();updateSearchModule();updateMiniMap();updateInfoCard();
+        });
+        $('moduleList').appendChild(row);
+      });
+      renderRelationControls();
+    }
+
+    function renderRelationControls(){
+      const host=$('relationSubcontrols');
+      if(!feature('relationFilter')){
+        host.innerHTML='<div class="module-off-note">فیلتر روابط خاموش است؛ همه روابط نمایش داده می‌شوند.</div>';
+        return;
+      }
+      host.innerHTML=`
+        <div class="subcontrols">
+          <label><input id="rfHierarchy" type="checkbox" ${config.relation.hierarchy?'checked':''}> درون‌خوشه‌ای</label>
+          <label><input id="rfCross" type="checkbox" ${config.relation.cross?'checked':''}> متقاطع / اثر</label>
+          <label><input id="rfVerified" type="checkbox" ${config.relation.verifiedOnly?'checked':''}> فقط تأییدشده</label>
+        </div>`;
+      ['Hierarchy','Cross','Verified'].forEach(name=>{
+        $('rf'+name).addEventListener('change',ev=>{
+          const map={Hierarchy:'hierarchy',Cross:'cross',Verified:'verifiedOnly'};
+          config.relation[map[name]]=ev.target.checked;saveConfig();render();
+        });
+      });
+    }
+
+    function setTheme(theme){
+      config.theme=theme;
+      document.body.dataset.theme=theme;
+      saveConfig();
+      $('themeLight').classList.toggle('active',theme==='light');
+      $('themeDark').classList.toggle('active',theme==='dark');
+      render();
+    }
+
+
+
+    function edgeAnchor(from,to){
+      const dx=to.x-from.x, dy=to.y-from.y;
+      if(!dx&&!dy)return {x:from.x,y:from.y};
+      const hw=from.w/2, hh=from.h/2;
+      const tx=dx===0?Infinity:hw/Math.abs(dx);
+      const ty=dy===0?Infinity:hh/Math.abs(dy);
+      const t=Math.min(tx,ty);
+      return {x:from.x+dx*t,y:from.y+dy*t};
+    }
+
+    function renderDecorations(){
+      if(!feature('infographicLayers'))return;
+      const NS='http://www.w3.org/2000/svg';
+      const inner=document.createElementNS(NS,'ellipse');
+      inner.setAttribute('class','decor-orbit');inner.setAttribute('cx',center.x);inner.setAttribute('cy',center.y);
+      inner.setAttribute('rx',String(macroRx));inner.setAttribute('ry',String(macroRy));inner.setAttribute('stroke-width','1.2');
+      decorationsLayer.appendChild(inner);
+      const outer=document.createElementNS(NS,'ellipse');
+      outer.setAttribute('class','decor-orbit');outer.setAttribute('cx',center.x);outer.setAttribute('cy',center.y);
+      outer.setAttribute('rx','1620');outer.setAttribute('ry','1160');outer.setAttribute('stroke-width','.8');outer.setAttribute('stroke-dasharray','10 18');
+      decorationsLayer.appendChild(outer);
+      [170,215,265].forEach((r,i)=>{
+        const ring=document.createElementNS(NS,'circle');ring.setAttribute('class','decor-core-ring');
+        ring.setAttribute('cx',center.x);ring.setAttribute('cy',center.y);ring.setAttribute('r',String(r));
+        ring.setAttribute('stroke-width',String(1.8-i*.35));ring.setAttribute('opacity',String(.38-i*.08));
+        decorationsLayer.appendChild(ring);
+      });
+      state.nodes.filter(n=>n.level==='macro').forEach(m=>{
+        const angle=Math.atan2(m.y-center.y,m.x-center.x);
+        const ux=Math.cos(angle),uy=Math.sin(angle);
+        const clusterNodes=state.nodes.filter(n=>n.macroId===m.id&&n.level==='trend');
+        const avg=clusterNodes.length?{
+          x:clusterNodes.reduce((a,n)=>a+n.x,0)/clusterNodes.length,
+          y:clusterNodes.reduce((a,n)=>a+n.y,0)/clusterNodes.length
+        }:{x:m.x+ux*320,y:m.y+uy*320};
+        const petal=document.createElementNS(NS,'ellipse');
+        petal.setAttribute('class','decor-petal');
+        petal.setAttribute('cx',String((m.x+avg.x)/2));petal.setAttribute('cy',String((m.y+avg.y)/2));
+        petal.setAttribute('rx','365');petal.setAttribute('ry','165');
+        petal.setAttribute('transform',`rotate(${angle*180/Math.PI} ${(m.x+avg.x)/2} ${(m.y+avg.y)/2})`);
+        petal.setAttribute('fill',m.color);petal.setAttribute('fill-opacity',document.body.dataset.theme==='dark'?'.055':'.04');
+        petal.setAttribute('stroke',m.color);petal.setAttribute('stroke-opacity',document.body.dataset.theme==='dark'?'.20':'.13');
+        decorationsLayer.appendChild(petal);
+        const spoke=document.createElementNS(NS,'line');
+        spoke.setAttribute('class','decor-spoke');spoke.setAttribute('x1',center.x);spoke.setAttribute('y1',center.y);
+        spoke.setAttribute('x2',m.x);spoke.setAttribute('y2',m.y);decorationsLayer.appendChild(spoke);
+      });
+    }
+
+    function snapshotGeometry(){
+      return state.nodes.map(n=>({id:n.id,x:n.x,y:n.y,w:n.w,h:n.h}));
+    }
+
+    function restoreGeometry(snapshot){
+      const map=new Map(snapshot.map(n=>[n.id,n]));
+      state.nodes.forEach(n=>{const s=map.get(n.id);if(s){n.x=s.x;n.y=s.y;n.w=s.w;n.h=s.h}});
+    }
+
+    function boxesOverlap(a,b,pad=24){
+      return Math.abs(a.x-b.x)<(a.w+b.w)/2+pad && Math.abs(a.y-b.y)<(a.h+b.h)/2+pad;
+    }
+
+    function countOverlaps(){
+      const visible=state.nodes.filter(nodeVisible);let total=0;
+      for(let i=0;i<visible.length;i++)for(let j=i+1;j<visible.length;j++)if(boxesOverlap(visible[i],visible[j]))total++;
+      return total;
+    }
+
+    function buildLayoutTargets(){
+      const targets=new Map();
+      targets.set('CORE',{x:center.x,y:center.y});
+      const clusterList=clusters.map(c=>({c,weight:1.8+Math.sqrt(c.trends.length)}));
+      const totalWeight=clusterList.reduce((sum,x)=>sum+x.weight,0);
+      let cursor=-Math.PI/2-Math.PI;
+      clusterList.forEach(({c,weight})=>{
+        const span=weight/totalWeight*Math.PI*2;
+        const angle=cursor+span/2;cursor+=span;
+        const mx=center.x+Math.cos(angle)*macroRx;
+        const my=center.y+Math.sin(angle)*macroRy;
+        targets.set(c.id,{x:mx,y:my});
+        const trends=state.nodes.filter(n=>n.macroId===c.id&&n.level==='trend').sort((a,b)=>a.id.localeCompare(b.id));
+        const cols=2,rows=Math.ceil(trends.length/cols);
+        trends.forEach((n,index)=>{
+          const row=Math.floor(index/cols);
+          const isLast=row===rows-1;
+          const rowCount=isLast?trends.length-(rows-1)*cols:cols;
+          const col=isLast?index-(rows-1)*cols:index%cols;
+          const tang=(col-(rowCount-1)/2)*255;
+          const radial=285+row*125;
+          const ux=Math.cos(angle),uy=Math.sin(angle),tx=-uy,ty=ux;
+          targets.set(n.id,{x:mx+ux*radial+tx*tang,y:my+uy*radial+ty*tang});
+        });
+      });
+      return targets;
+    }
+
+    function solveCollisionLayout(){
+      const targets=buildLayoutTargets();
+      state.nodes.forEach(n=>{
+        if(n.level==='core'){n.w=260;n.h=170}
+        else if(n.level==='macro'){n.w=225;n.h=116}
+        else{
+          n.w=Math.max(188,Math.min(236,170+String(n.label||'').length*1.35));
+          n.h=String(n.label||'').length>38?82:76;
+        }
+        const t=targets.get(n.id);if(t){n.x=t.x;n.y=t.y}
+      });
+      const pad=24;
+      for(let iter=0;iter<220;iter++){
+        if(iter<150){
+          state.nodes.forEach(n=>{
+            if(n.level!=='trend')return;
+            const t=targets.get(n.id);if(!t)return;
+            n.x+=(t.x-n.x)*.025;n.y+=(t.y-n.y)*.025;
+          });
+        }
+        for(let i=0;i<state.nodes.length;i++)for(let j=i+1;j<state.nodes.length;j++){
+          const a=state.nodes[i],b=state.nodes[j];
+          const reqX=(a.w+b.w)/2+pad,reqY=(a.h+b.h)/2+pad;
+          const dx=b.x-a.x,dy=b.y-a.y,ox=reqX-Math.abs(dx),oy=reqY-Math.abs(dy);
+          if(ox<=0||oy<=0)continue;
+          const ma=a.level==='trend'?1:0,mb=b.level==='trend'?1:0;
+          if(!ma&&!mb)continue;
+          const sum=ma+mb;
+          if(ox<oy){
+            const sign=dx===0?(a.id<b.id?1:-1):Math.sign(dx),push=ox+1;
+            a.x-=sign*push*(ma/sum);b.x+=sign*push*(mb/sum);
+          }else{
+            const sign=dy===0?(a.id<b.id?1:-1):Math.sign(dy),push=oy+1;
+            a.y-=sign*push*(ma/sum);b.y+=sign*push*(mb/sum);
+          }
+        }
+        state.nodes.forEach(n=>{
+          const hw=n.w/2+40,hh=n.h/2+40;
+          n.x=Math.max(hw,Math.min(VIEW_W-hw,n.x));
+          n.y=Math.max(hh,Math.min(VIEW_H-hh,n.y));
+        });
+      }
+    }
+
+    function previewAutoLayout(){
+      if(!layoutBackup)layoutBackup=snapshotGeometry();
+      solveCollisionLayout();layoutPreviewActive=true;
+      svg.classList.remove('layout-preview-pulse');void svg.getBoundingClientRect();svg.classList.add('layout-preview-pulse');
+      render();fit();
+    }
+
+    function applyAutoLayout(){
+      if(!layoutPreviewActive)return;
+      layoutBackup=null;layoutPreviewActive=false;renderLayoutPanel();flash('چیدمان اعمال شد');
+    }
+
+    function restoreAutoLayout(){
+      if(!layoutBackup)return;
+      restoreGeometry(layoutBackup);layoutBackup=null;layoutPreviewActive=false;render();fit();flash('چیدمان قبلی برگشت');
+    }
+
+    function renderLayoutPanel(){
+      const overlaps=countOverlaps();
+      overlapBadge.textContent=overlaps===0?'0 overlap':overlaps+' overlap';
+      overlapBadge.style.color=overlaps===0?'var(--accent-2)':'var(--danger)';
+      layoutApplyBtn.disabled=!layoutPreviewActive;
+      layoutRestoreBtn.disabled=!layoutBackup;
+    }
+
+    function connectedNodeIds(id){
+      const set=new Set([id]);
+      state.edges.forEach(e=>{
+        if(!relationVisible(e))return;
+        if(e.source===id)set.add(e.target);
+        if(e.target===id)set.add(e.source);
+      });
+      return set;
+    }
+
+    function clearHoverIntelligence(){
+      nodesLayer.querySelectorAll('.hover-dimmed,.hover-related').forEach(el=>el.classList.remove('hover-dimmed','hover-related'));
+      edgesLayer.querySelectorAll('.hover-dimmed,.hover-related').forEach(el=>el.classList.remove('hover-dimmed','hover-related'));
+      labelsLayer.querySelectorAll('.hover-dimmed').forEach(el=>el.classList.remove('hover-dimmed'));
+    }
+
+    function applyHoverNode(id){
+      clearHoverIntelligence();
+      const related=connectedNodeIds(id);
+      nodesLayer.querySelectorAll('.node').forEach(el=>{
+        const nodeId=el.dataset.id;
+        el.classList.toggle('hover-related',related.has(nodeId));
+        el.classList.toggle('hover-dimmed',!related.has(nodeId));
+      });
+      edgesLayer.querySelectorAll('.edge').forEach(el=>{
+        const onPath=el.dataset.source===id || el.dataset.target===id;
+        el.classList.toggle('hover-related',onPath);
+        el.classList.toggle('hover-dimmed',!onPath);
+      });
+      labelsLayer.querySelectorAll('.cross-label').forEach(el=>{
+        const edge=state.edges.find(e=>e.id===el.dataset.id);
+        const onPath=edge && (edge.source===id || edge.target===id);
+        el.classList.toggle('hover-dimmed',!onPath);
+      });
+    }
+
+    function applyHoverEdge(edge){
+      clearHoverIntelligence();
+      const related=new Set([edge.source,edge.target]);
+      nodesLayer.querySelectorAll('.node').forEach(el=>{
+        const yes=related.has(el.dataset.id);
+        el.classList.toggle('hover-related',yes);
+        el.classList.toggle('hover-dimmed',!yes);
+      });
+      edgesLayer.querySelectorAll('.edge').forEach(el=>{
+        const yes=el.dataset.id===edge.id;
+        el.classList.toggle('hover-related',yes);
+        el.classList.toggle('hover-dimmed',!yes);
+      });
+      labelsLayer.querySelectorAll('.cross-label').forEach(el=>el.classList.toggle('hover-dimmed',el.dataset.id!==edge.id));
+    }
+
+    function nodeLevelLabel(n){
+      return n.level==='core'?'هسته':n.level==='macro'?'کلان‌روند':'روند';
+    }
+
+    function clusterTitleFor(n){
+      if(!n)return '';
+      const macro=macroForNode(n);
+      if(!macro)return '';
+      return nodeById(macro)?.label || '';
+    }
+
+    function showNodeInfo(id){
+      if(!feature('infoCard'))return;
+      const n=nodeById(id);if(!n)return;
+      const connected=state.edges.filter(e=>e.source===id||e.target===id);
+      const verified=connected.filter(e=>e.verified).length;
+      infoCard.innerHTML=`
+        <div class="info-kicker">NODE · ${escapeXml(n.id)}</div>
+        <h3>${escapeXml(n.label)}</h3>
+        <p>${escapeXml(nodeLevelLabel(n))}${clusterTitleFor(n)&&n.level==='trend'?' · '+escapeXml(clusterTitleFor(n)):''}</p>
+        <div class="info-meta"><span>${connected.length} رابطه</span><span>${verified} تأییدشده</span></div>`;
+      infoCard.classList.add('is-visible');
+    }
+
+    function showEdgeInfo(e){
+      if(!feature('infoCard'))return;
+      const source=nodeById(e.source),target=nodeById(e.target);
+      infoCard.innerHTML=`
+        <div class="info-kicker">EDGE · ${escapeXml(e.id)}</div>
+        <h3>${escapeXml(e.label||'رابطه بدون برچسب')}</h3>
+        <p>${escapeXml(source?.label||e.source)} ← ${escapeXml(target?.label||e.target)}</p>
+        <div class="info-meta"><span>${escapeXml(e.kind||'relation')}</span><span>${e.verified?'تأییدشده':'تأییدنشده'}</span></div>`;
+      infoCard.classList.add('is-visible');
+    }
+
+    function updateInfoCard(){
+      if(!feature('infoCard')){
+        infoCard.classList.remove('is-visible');infoCard.innerHTML='';return;
+      }
+      if(selected?.type==='node')showNodeInfo(selected.id);
+      else if(selected?.type==='edge'){
+        const e=state.edges.find(x=>x.id===selected.id);if(e)showEdgeInfo(e);
+      }else{
+        infoCard.classList.remove('is-visible');infoCard.innerHTML='';
+      }
+    }
+
+    function updateSearchModule(){
+      searchPanel.classList.toggle('is-visible',feature('search'));
+      if(!feature('search')){searchResults.innerHTML='';return}
+      renderSearchResults(searchInput.value||'');
+    }
+
+    function renderSearchResults(query){
+      if(!feature('search'))return;
+      const q=String(query||'').trim().toLocaleLowerCase('fa');
+      if(!q){searchResults.innerHTML='<div class="search-empty">نام یک روند یا کلان‌روند را بنویسید.</div>';return}
+      const results=state.nodes
+        .map(n=>({n,label:String(n.label||'').toLocaleLowerCase('fa')}))
+        .filter(x=>x.label.includes(q))
+        .sort((a,b)=>(a.label.startsWith(q)?-1:0)-(b.label.startsWith(q)?-1:0) || a.label.length-b.label.length)
+        .slice(0,8);
+      searchResults.innerHTML='';
+      if(!results.length){searchResults.innerHTML='<div class="search-empty">نتیجه‌ای پیدا نشد.</div>';return}
+      results.forEach(({n})=>{
+        const btn=document.createElement('button');btn.className='search-result';
+        btn.innerHTML='<strong>'+escapeXml(n.label)+'</strong><small>'+escapeXml(n.id)+' · '+escapeXml(nodeLevelLabel(n))+'</small>';
+        btn.addEventListener('click',()=>{
+          if(n.level==='trend'&&collapsed.has(n.macroId)){collapsed.delete(n.macroId);saveConfig()}
+          selectNode(n.id);centerOnNode(n.id);searchInput.blur();
+        });
+        searchResults.appendChild(btn);
+      });
+    }
+
+    function centerOnNode(id){
+      const n=nodeById(id);if(!n)return;
+      const scale=Math.max(1.05,Math.min(1.35,transform.scale));
+      transform.scale=scale;
+      transform.x=VIEW_W/2-n.x*scale;
+      transform.y=VIEW_H/2-n.y*scale;
+      applyTransform();applySemanticZoom();
+    }
+
+    function updateMiniMap(){
+      if(!miniMap)return;
+      const enabled=feature('miniMap');
+      miniMap.classList.toggle('is-hidden',!enabled);
+      if(!enabled)return;
+      miniNodes.innerHTML='';
+      state.nodes.forEach(n=>{
+        if(!nodeVisible(n))return;
+        const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        const mw=n.level==='core'?42:n.level==='macro'?28:12;
+        const mh=n.level==='core'?28:n.level==='macro'?18:8;
+        r.setAttribute('x',n.x-mw/2);r.setAttribute('y',n.y-mh/2);
+        r.setAttribute('width',mw);r.setAttribute('height',mh);r.setAttribute('rx',String(Math.min(8,mh/2)));
+        r.setAttribute('class','mini-node '+n.level);
+        if(n.level==='macro')r.setAttribute('fill',n.color);
+        miniNodes.appendChild(r);
+      });
+      const vx=-transform.x/transform.scale;
+      const vy=-transform.y/transform.scale;
+      const vw=VIEW_W/transform.scale;
+      const vh=VIEW_H/transform.scale;
+      miniViewport.setAttribute('x',String(vx));
+      miniViewport.setAttribute('y',String(vy));
+      miniViewport.setAttribute('width',String(vw));
+      miniViewport.setAttribute('height',String(vh));
+    }
+
+    function clientToWorld(clientX,clientY){
+      const r=svg.getBoundingClientRect();
+      const sx=VIEW_W/r.width, sy=VIEW_H/r.height;
+      const x=(clientX-r.left)*sx, y=(clientY-r.top)*sy;
+      return {x:(x-transform.x)/transform.scale,y:(y-transform.y)/transform.scale};
+    }
+
+    function beginNodeDrag(ev,id){
+      if(ev.button!==0)return;
+      ev.stopPropagation();
+      const n=nodeById(id);
+      const p=clientToWorld(ev.clientX,ev.clientY);
+      drag={id,dx:p.x-n.x,dy:p.y-n.y,pointerId:ev.pointerId};
+      svg.setPointerCapture(ev.pointerId);
+      selectNode(id);
+    }
+
+    svg.addEventListener('pointermove',ev=>{
+      if(drag){
+        const n=nodeById(drag.id);const p=clientToWorld(ev.clientX,ev.clientY);
+        n.x=p.x-drag.dx;n.y=p.y-drag.dy;render();return;
+      }
+      if(pan){
+        const r=svg.getBoundingClientRect();
+        const sx=VIEW_W/r.width, sy=VIEW_H/r.height;
+        transform.x=pan.x+(ev.clientX-pan.cx)*sx;
+        transform.y=pan.y+(ev.clientY-pan.cy)*sy;
+        applyTransform();applySemanticZoom();
+      }
+    });
+
+    svg.addEventListener('pointerup',ev=>{
+      if(drag||pan){try{svg.releasePointerCapture(ev.pointerId)}catch(_){}}
+      drag=null;pan=null;
+    });
+
+    $('panSurface').addEventListener('pointerdown',ev=>{
+      if(ev.button!==0)return;
+      clearSelection();
+      pan={cx:ev.clientX,cy:ev.clientY,x:transform.x,y:transform.y};
+      svg.setPointerCapture(ev.pointerId);
+    });
+
+    svg.addEventListener('wheel',ev=>{
+      ev.preventDefault();
+      const r=svg.getBoundingClientRect();
+      const sx=VIEW_W/r.width, sy=VIEW_H/r.height;
+      const px=(ev.clientX-r.left)*sx, py=(ev.clientY-r.top)*sy;
+      const before={x:(px-transform.x)/transform.scale,y:(py-transform.y)/transform.scale};
+      const factor=ev.deltaY<0?1.12:.89;
+      transform.scale=Math.max(.35,Math.min(2.4,transform.scale*factor));
+      transform.x=px-before.x*transform.scale;
+      transform.y=py-before.y*transform.scale;
+      applyTransform();applySemanticZoom();
+    },{passive:false});
+
+    function applyTransform(){
+      viewport.setAttribute('transform',`translate(${transform.x} ${transform.y}) scale(${transform.scale})`);
+      $('zoomBadge').textContent=Math.round(transform.scale*100)+'%';
+      updateMiniMap();
+    }
+
+    function applySemanticZoom(){
+      svg.classList.remove('zoom-low','zoom-mid','zoom-high');
+      if(!feature('semanticZoom')){svg.classList.add('zoom-high');return}
+      if(transform.scale<.58)svg.classList.add('zoom-low');
+      else if(transform.scale<.90)svg.classList.add('zoom-mid');
+      else svg.classList.add('zoom-high');
+    }
+
+    function zoom(factor){
+      const cx=VIEW_W/2,cy=VIEW_H/2;
+      const before={x:(cx-transform.x)/transform.scale,y:(cy-transform.y)/transform.scale};
+      transform.scale=Math.max(.35,Math.min(2.4,transform.scale*factor));
+      transform.x=cx-before.x*transform.scale;transform.y=cy-before.y*transform.scale;
+      applyTransform();applySemanticZoom();
+    }
+
+    function fit(){transform={x:0,y:0,scale:1};applyTransform();applySemanticZoom()}
+
+    function exportJson(){
+      const payload={...state,ui:{features:config.features,relation:config.relation,collapsed:[...collapsed],theme:config.theme}};
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+      downloadBlob(blob,'fsinfo-layout-v0.4.json');
+    }
+
+    function exportSvg(){
+      const clone=svg.cloneNode(true);
+      clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+      clone.setAttribute('width',String(VIEW_W));clone.setAttribute('height',String(VIEW_H));
+      const style=document.createElementNS('http://www.w3.org/2000/svg','style');
+      style.textContent='text{font-family:Vazirmatn,Tahoma,Arial,sans-serif}.edge{fill:none;stroke-linecap:round}.node text{text-anchor:middle;dominant-baseline:middle;font-weight:800}.background-dot{opacity:.3}';
+      clone.insertBefore(style,clone.firstChild);
+      const blob=new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'});
+      downloadBlob(blob,'fsinfo-map-v0.4.svg');
+    }
+
+    function downloadBlob(blob,name){
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+
+    function importJson(file){
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try{
+          const parsed=JSON.parse(reader.result);
+          if(!Array.isArray(parsed.nodes)||!Array.isArray(parsed.edges))throw new Error();
+          state={version:VERSION,nodes:parsed.nodes,edges:parsed.edges};
+          selected=null;
+          if(parsed.ui){
+            if(parsed.ui.features)config.features={...config.features,...parsed.ui.features};
+            if(parsed.ui.relation)config.relation={...config.relation,...parsed.ui.relation};
+            if(Array.isArray(parsed.ui.collapsed)){collapsed.clear();parsed.ui.collapsed.forEach(x=>collapsed.add(x))}
+            if(parsed.ui.theme)config.theme=parsed.ui.theme;
+            saveConfig();setTheme(config.theme);renderModulePanel();
+          }
+          render();renderInspector();saveData();
+        }catch(_){alert('فایل JSON معتبر FSInfo نیست.')}
+      };
+      reader.readAsText(file,'utf-8');
+    }
+
+    function flash(message){
+      const old=$('save').textContent;$('save').textContent=message;
+      setTimeout(()=>$('save').textContent=old,900);
+    }
+
+    $('save').addEventListener('click',saveData);
+    $('exportJson').addEventListener('click',exportJson);
+    $('exportSvg').addEventListener('click',exportSvg);
+    $('importBtn').addEventListener('click',()=>$('importFile').click());
+    $('importFile').addEventListener('change',ev=>{const f=ev.target.files&&ev.target.files[0];if(f)importJson(f);ev.target.value=''});
+    $('reset').addEventListener('click',()=>{
+      if(!confirm('چیدمان، ماژول‌ها و تنظیمات محلی این نسخه بازنشانی شود؟'))return;
+      localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(CONFIG_KEY);
+      location.reload();
+    });
+    $('zoomIn').addEventListener('click',()=>zoom(1.2));
+    $('zoomOut').addEventListener('click',()=>zoom(.83));
+    $('fit').addEventListener('click',fit);
+    layoutPreviewBtn.addEventListener('click',previewAutoLayout);
+    layoutApplyBtn.addEventListener('click',applyAutoLayout);
+    layoutRestoreBtn.addEventListener('click',restoreAutoLayout);
+    $('themeLight').addEventListener('click',()=>setTheme('light'));
+    $('themeDark').addEventListener('click',()=>setTheme('dark'));
+
+    searchInput.addEventListener('input',()=>renderSearchResults(searchInput.value));
+    searchInput.addEventListener('keydown',ev=>{
+      if(ev.key==='Escape'){searchInput.value='';renderSearchResults('');searchInput.blur()}
+    });
+    document.addEventListener('keydown',ev=>{
+      if(feature('search') && ev.key==='/' && document.activeElement!==searchInput){
+        ev.preventDefault();searchInput.focus();
+      }
+    });
+    miniMap.addEventListener('pointerdown',ev=>{
+      if(!feature('miniMap'))return;
+      ev.preventDefault();
+      const r=miniMap.getBoundingClientRect();
+      const wx=(ev.clientX-r.left)/r.width*VIEW_W;
+      const wy=(ev.clientY-r.top)/r.height*VIEW_H;
+      transform.x=VIEW_W/2-wx*transform.scale;
+      transform.y=VIEW_H/2-wy*transform.scale;
+      applyTransform();applySemanticZoom();
+    });
+
+    const hadSavedData=loadData();
+    setTheme(config.theme);
+    if(!hadSavedData){
+      solveCollisionLayout();
+      layoutBackup=null;layoutPreviewActive=false;
+    }
+    renderModulePanel();
+    render();
+    renderInspector();
+    updateSearchModule();
+    updateMiniMap();
+    updateInfoCard();
+  })();
+  </script>
+</body>
+</html>

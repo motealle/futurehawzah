@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FSInfo v0.11 Reading Presentation — Book-faithful Guided Galaxy</title>
+<link rel="preconnect" href="https://parspack-cdn.librefont.ir" crossorigin>
+<link rel="stylesheet" href="https://parspack-cdn.librefont.ir/sahel/font-face.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<link rel="stylesheet" href="v0.11/styles.css">
+</head>
+<body>
+<canvas id="galaxy"></canvas>
+<div class="ui">
+  <section class="title panel">
+    <div class="eyebrow">FSINFO · READING PRESENTATION v0.11 · BOOK-FAITHFUL</div>
+    <h1>نقشه کهکشانی سه‌بعدی کلان‌روندهای آینده حوزه‌های علمیه</h1>
+    <p>نسخه پالایش خواندن و ارائه: پنل کتاب در موبایل متناسب با حجم متن تغییر اندازه می‌دهد، روایت قابل تکمیل سریع است و زیرروندها می‌توانند در همان مسیر ارائه خوانده شوند.</p>
+  </section>
+
+  <div class="hud">
+    <section class="panel">
+      <div class="head"><strong>NAV / CAMERA</strong><span class="badge" id="camBadge">3D</span></div>
+      <div class="body">
+        <div class="actions">
+          <button id="resetCam">ریست</button>
+          <button id="focusCore">هسته</button>
+          <button id="startPresentation" class="primary">شروع ارائه</button>
+          <button id="theaterBtn">حالت خلوت</button>
+          <button id="bookBtn">کتاب · K</button>
+          <button id="decisionBtn">تصمیم · D</button>
+          <button id="exportPng">PNG</button>
+        </div>
+        <div class="pills">
+          <span class="pill">14 کلان‌روند</span><span class="pill">78 زیرروند</span><span class="pill">offline</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="head"><strong>GALACTIC LAYERS</strong><span class="badge">TOGGLE</span></div>
+      <div class="body toggles">
+        <label class="toggle"><input id="tgLabels" type="checkbox" checked>برچسب‌ها</label>
+        <label class="toggle"><input id="tgEdges" type="checkbox" checked>روابط درون‌خوشه‌ای</label>
+        <label class="toggle"><input id="tgCross" type="checkbox" checked>روابط متقاطع</label>
+        <label class="toggle"><input id="tgStars" type="checkbox" checked>ستاره‌ها</label>
+        <label class="toggle"><input id="tgNebula" type="checkbox" checked>هاله‌های کهکشانی</label>
+        <label class="toggle"><input id="tgIcons" type="checkbox" checked>نماد کلان‌روندها</label>
+        <label class="toggle"><input id="tgRotate" type="checkbox" checked>چرخش خودکار</label>
+        <label class="toggle"><input id="tgReduced" type="checkbox">حرکت کمتر</label>
+        <label class="font-row">فونت <select id="fontSelect"><option value="vazirmatn">وزیرمتن</option><option value="sahel">ساحل</option></select></label>
+      </div>
+    </section>
+  </div>
+
+  <section class="info panel">
+    <div class="head"><strong>OBJECT INFO</strong><span class="badge" id="infoId">NONE</span></div>
+    <div class="body">
+      <div class="info-breadcrumb" id="infoBreadcrumb"></div>
+      <h3 id="infoTitle">برای دیدن جزئیات روی یک گره بروید</h3>
+      <p id="infoText">Drag برای چرخش، Wheel یا Pinch برای زوم و Tap/Click برای تمرکز.</p>
+      <div class="info-actions"><button id="infoBookBtn" class="icon-action" hidden aria-label="باز کردن کتاب"><span class="book-svg">▤</span> کتاب</button><button id="infoBackBtn" hidden>↩ سطح بالاتر</button></div>
+      <div class="pills" id="infoPills"><span class="pill">canvas 3D</span><span class="pill">interactive</span></div>
+    </div>
+  </section>
+
+  <section class="legend panel">
+    <div class="head"><strong>LEGEND</strong><span class="badge">GALAXY MAP</span></div>
+    <div class="body">
+      <div class="legend-row"><span class="sw"></span><span>کلان‌روندها و زیرروندهای هر خوشه</span></div>
+      <div class="legend-row"><span class="sw cross"></span><span>روابط متقاطع اولیه و غیرنهایی</span></div>
+    </div>
+  </section>
+
+  <section class="present panel" id="presentationPanel">
+    <div class="head"><strong>GUIDED LEARNING</strong><span class="badge" id="presentState">PLAYING</span></div>
+    <div class="body">
+      <div class="mobile-grabber"></div><div class="swipe-hint">برای ورق‌زدن افقی بکشید</div>
+      <div class="present-top">
+        <span class="present-index" id="presentIndex">01 / 14</span>
+        <span class="present-source" id="presentSource">خلاصه از گزارش اصلی</span><button id="presentBookBtn" class="icon-action mini" title="باز کردن بخش کتاب"><span class="book-svg">▤</span></button>
+      </div>
+      <div class="present-title-row"><h2 id="presentTitle">مدیریت جمعیت‌شناسی</h2><button id="presentBackMacro" hidden>↩ کلان‌روند</button></div>
+      <div class="present-question" id="presentQuestion">در این بخش به چه چیزی توجه کنیم؟</div>
+      <p class="present-copy"><span id="presentCopy"></span><span class="cursor" id="typeCursor"></span></p>
+      <div class="trend-list" id="presentTrends"></div>
+      <div class="takeaway" id="presentTakeaway"></div>
+      <details class="source-drawer" id="sourceDrawer">
+        <summary>منبع و نوع این متن</summary>
+        <div id="sourceDetailText"></div>
+      </details>
+      <div class="present-progress"><i id="presentProgress"></i></div>
+      <div class="present-dots" id="presentDots"></div>
+      <div class="present-controls">
+        <button id="presentPrev">قبلی</button>
+        <button id="presentPause" class="grow">توقف</button>
+        <button id="presentNext" class="primary">بعدی</button>
+        <button id="presentOverview">نمای کل</button>
+        <button id="presentExit">خروج</button>
+      </div>
+      <div class="present-options">
+        <label><input type="checkbox" id="presentAuto" checked>پخش خودکار</label>
+        <label><input type="checkbox" id="presentType" checked>نمایش تایپی متن</label>
+        <label><input type="checkbox" id="presentReduced">حرکت کمتر</label>
+        <label><input type="checkbox" id="presentTrendsMode">ارائه روندها</label>
+      </div>
+    </div>
+  </section>
+
+  <aside class="knowledge-drawer panel" id="bookDrawer">
+    <div class="head"><strong>BOOK CORE</strong><button class="panel-x" id="bookClose">×</button></div>
+    <div class="body">
+      <div class="book-search"><input id="bookSearch" type="search" placeholder="جست‌وجو در متن کتاب…"><div id="bookSearchResults"></div></div>
+      <div class="book-breadcrumb" id="bookBreadcrumb"></div>
+      <div class="book-title-row"><h3 id="bookTitle">کتاب</h3><button id="bookBackDepth" hidden>↩ کلان‌روند</button></div>
+      <div class="book-meta" id="bookMeta">یک کلان‌روند یا زیرروند را انتخاب کنید.</div>
+      <div class="depth-tabs book-depth">
+        <button id="bookModeSentence">یک جمله</button>
+        <button id="bookModeOpening" class="active">مقدمه بخش</button>
+        <button id="bookModePercent">میزان دلخواه</button>
+        <button id="bookModeFull">متن کامل</button>
+      </div>
+      <div class="book-range" id="bookRangeWrap" hidden><input id="bookRange" type="range" min="5" max="100" step="5" value="25"><b id="bookRangeValue">25٪</b></div>
+      <div class="knowledge-body book-text" id="bookText">محتوای این پنل فقط از متن کتاب تغذیه می‌شود.</div>
+    </div>
+  </aside>
+
+  <aside class="decision-panel panel" id="decisionPanel">
+    <div class="head"><strong>DECISION DESK</strong><button class="panel-x" id="decisionClose">×</button></div>
+    <div class="body decision-body">
+      <section><h3 id="decisionSelected">یک کلان‌روند را انتخاب کنید</h3><p class="decision-muted">محتوای اصلی از کتاب است؛ آمادگی و یادداشت‌ها فقط ورودی شما هستند.</p><div class="prep-controls" id="prepControls"></div></section>
+      <section class="decision-section"><h3>یادداشت مدیریتی شما</h3><textarea id="decisionNote" class="decision-note" rows="5" placeholder="برداشت، دغدغه، اقدام یا سؤال جلسه…"></textarea></section>
+      <section class="decision-section"><h3>مقایسه دو کلان‌روند</h3><div class="compare-selects"><select id="compareA"></select><select id="compareB"></select></div><div class="compare-output" id="compareOutput"></div></section>
+    </div>
+  </aside>
+
+  <section class="intro-panel panel" id="introPanel">
+    <div class="head"><strong>FUTURES STUDIES · INTRO</strong><span class="badge" id="introIndex">1 / 4</span></div>
+    <div class="body">
+      <div class="intro-kicker">چارچوب آموزشی آینده‌پژوهی</div>
+      <h2 id="introTitle">روند چیست؟</h2>
+      <p id="introText"></p>
+      <div class="intro-note">این چهار کارت، توضیح آموزشی برای خواندن نقشه‌اند و نقل مستقیم از گزارش نیستند.</div>
+      <div class="intro-dots" id="introDots"></div>
+      <div class="intro-controls">
+        <button id="introSkip">رد کردن مقدمه</button>
+        <span class="grow"></span>
+        <button id="introPrev">قبلی</button>
+        <button id="introNext" class="primary">بعدی</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="recap-panel panel" id="recapPanel">
+    <div class="head"><strong>LEARNING RECAP</strong><span class="badge">مرور کوتاه</span></div>
+    <div class="body">
+      <h3 id="recapTitle" style="margin:0 0 6px"></h3>
+      <div class="recap-list" id="recapList"></div>
+      <div class="actions"><button id="recapContinue" class="primary">ادامه ارائه</button><button id="recapSkip">رد کردن مرورها</button></div>
+    </div>
+  </section>
+
+  <nav class="quick-dock" aria-label="ابزارهای سریع"><button id="quickBook" title="کتاب · K"><span class="book-svg">▤</span><small>K</small></button><button id="quickDecision" title="تصمیم · D">◈<small>D</small></button><button id="quickTheater" title="حالت خلوت · H">◫<small>H</small></button></nav>
+  <button class="theater-toggle" id="theaterToggle" title="حالت خلوت — H">حالت خلوت · H</button>
+  <button class="theater-restore" id="theaterRestore" title="بازگرداندن پنل‌ها — H">◫</button>
+
+  <div class="hint">Drag: چرخش · Wheel: زوم · Click: تمرکز · Double-click فضای خالی: بازگشت به هسته</div>
+  <div class="error" id="errorBox"><div class="box"><h2>اجرای گرافیک متوقف شد</h2><p id="errorText"></p></div></div>
+</div>
+
+<script defer src="v0.11/book-index.js"></script>
+<script defer src="v0.11/sections/MT01.js"></script>
+<script defer src="v0.11/sections/MT02.js"></script>
+<script defer src="v0.11/sections/MT03.js"></script>
+<script defer src="v0.11/sections/MT04.js"></script>
+<script defer src="v0.11/sections/MT05.js"></script>
+<script defer src="v0.11/sections/MT06.js"></script>
+<script defer src="v0.11/sections/MT07.js"></script>
+<script defer src="v0.11/sections/MT08.js"></script>
+<script defer src="v0.11/sections/MT09.js"></script>
+<script defer src="v0.11/sections/MT10.js"></script>
+<script defer src="v0.11/sections/MT11.js"></script>
+<script defer src="v0.11/sections/MT12.js"></script>
+<script defer src="v0.11/sections/MT13.js"></script>
+<script defer src="v0.11/sections/MT14.js"></script>
+<script defer src="v0.11/content-service.js"></script>
+<script defer src="v0.11/viewport-controller.js"></script>
+<script defer src="v0.11/gesture-controller.js"></script>
+<script defer src="v0.11/font-module.js"></script>
+<script defer src="v0.11/book-tools.js"></script>
+<script defer src="v0.11/planet-material.js"></script>
+<script defer src="v0.11/app.js"></script>
+</body>
+</html>

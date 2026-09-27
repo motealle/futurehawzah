@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>FSInfo — نقشه کلان‌روندهای آینده حوزه‌های علمیه</title>
+  <style>
+    :root{
+      font-family: Vazirmatn, Sahel, Tahoma, Arial, sans-serif;
+      color:#15204f;
+      background:#f3f3e8;
+      font-synthesis:none;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:
+      radial-gradient(circle at 18% 12%,rgba(170,255,216,.38),transparent 28rem),
+      radial-gradient(circle at 82% 18%,rgba(255,223,106,.34),transparent 30rem),
+      linear-gradient(180deg,#faf9ee 0%,#eef3ea 100%);
+      overflow-x:hidden}
+    body{min-width:320px}
+    button,input,textarea,select{font:inherit}
+    .app{min-height:100vh;padding:20px}
+    .hero{max-width:1680px;margin:0 auto 16px;display:flex;gap:20px;align-items:flex-end;justify-content:space-between}
+    .hero h1{margin:6px 0 8px;font-size:clamp(1.7rem,3vw,3.5rem);line-height:1.28;color:#152e8c;letter-spacing:-.025em}
+    .hero p{margin:0;max-width:900px;color:#59617a;line-height:1.9}
+    .eyebrow{color:#d46300;font-weight:900}
+    .status{min-width:190px;padding:13px 15px;border:1px solid rgba(21,46,140,.12);border-radius:18px;background:rgba(255,255,255,.76);box-shadow:0 14px 40px rgba(33,49,90,.08)}
+    .status strong{display:block;color:#243c9a}
+    .status small{display:block;margin-top:4px;color:#7d8499;direction:ltr}
+    .workspace{max-width:1680px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;height:min(76vh,1020px)}
+    .stage{position:relative;min-width:0;overflow:hidden;border:1px solid rgba(39,55,100,.1);border-radius:28px;background:radial-gradient(circle at 50% 48%,rgba(58,87,255,.09),transparent 24rem),rgba(251,251,239,.9);box-shadow:0 22px 80px rgba(35,47,78,.12);touch-action:none}
+    #map{display:block;width:100%;height:100%;user-select:none}
+    .hud{position:absolute;left:14px;top:14px;display:grid;gap:7px;z-index:3}
+    .hud button,.toolbar button{border:1px solid #d9ddec;border-radius:11px;background:#fff;color:#26335f;cursor:pointer}
+    .hud button{width:42px;height:42px;font-weight:900}
+    .legend{position:absolute;right:14px;top:14px;padding:9px 11px;border-radius:13px;background:rgba(255,255,255,.86);box-shadow:0 7px 24px rgba(34,46,84,.08);font-size:11px;z-index:3}
+    .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
+    .legend-line{width:28px;height:2px;background:#5c71c9}
+    .legend-line.cross{height:0;border-top:2px dashed #b62770;background:none}
+    .inspector{height:100%;overflow:auto;padding:20px;border:1px solid rgba(32,49,95,.1);border-radius:24px;background:rgba(255,255,255,.84);box-shadow:0 18px 60px rgba(42,54,89,.08);backdrop-filter:blur(18px)}
+    .inspector h2{margin:7px 0 18px;font-size:1.15rem;line-height:1.6}
+    .inspector p{color:#747b8f;line-height:1.9}
+    .inspector label{display:grid;gap:7px;margin-bottom:14px;color:#576078;font-size:13px;font-weight:800}
+    .inspector textarea,.inspector input[type=number],.inspector select{width:100%;padding:10px 11px;border:1px solid #d9dceb;border-radius:11px;background:#fff;color:#1d274e}
+    .inspector textarea{resize:vertical}
+    .inspector input[type=color]{width:100%;height:42px;border:0;background:transparent}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .check{display:flex!important;flex-direction:row;align-items:center;gap:9px!important;padding:9px 10px;border:1px solid #e4e6ef;border-radius:11px;background:rgba(247,248,252,.82)}
+    .meta{margin-top:10px;padding-top:14px;display:flex;justify-content:space-between;gap:10px;border-top:1px dashed #d6d9e5;color:#7c8396}
+    .meta code{direction:ltr;color:#4050a0}
+    .toolbar{max-width:1680px;margin:14px auto 0;padding:10px;display:flex;flex-wrap:wrap;gap:8px;border-radius:18px;background:rgba(255,255,255,.72);border:1px solid rgba(32,49,95,.08);box-shadow:0 10px 34px rgba(42,54,89,.06)}
+    .toolbar button{min-height:42px;padding:8px 14px}
+    .toolbar button:hover,.hud button:hover{border-color:#8e98cb}
+    .toolbar .primary{border-color:#354bff;color:#fff;background:#354bff}
+    .toolbar .danger{margin-inline-start:auto;color:#9b4058}
+    .footer{max-width:1680px;margin:12px auto 0;display:flex;justify-content:space-between;gap:20px;color:#777f91;font-size:12px}
+    .hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+    .edge{fill:none;stroke-linecap:round;pointer-events:stroke;cursor:pointer}
+    .edge.hierarchy{opacity:.58}
+    .edge.cross{stroke:#b62770;stroke-width:2.2;stroke-dasharray:10 13;opacity:.82;animation:dash 1.2s linear infinite}
+    .edge.selected{opacity:1!important;filter:drop-shadow(0 0 5px rgba(182,39,112,.46));stroke-width:4!important}
+    @keyframes dash{to{stroke-dashoffset:-23}}
+    .node{cursor:grab;filter:drop-shadow(0 8px 16px rgba(32,45,86,.12))}
+    .node:active{cursor:grabbing}
+    .node rect{stroke-width:1.4}
+    .node.macro rect{stroke-width:2.3}
+    .node.core rect{stroke-width:3}
+    .node.selected rect{stroke-width:4;filter:drop-shadow(0 0 8px rgba(53,75,255,.35))}
+    .node text{pointer-events:none;text-anchor:middle;dominant-baseline:middle;fill:#17234f;font-weight:800}
+    .node.core text{fill:#fff}
+    .node .kicker{font-size:10px;font-weight:900;opacity:.7}
+    .node.core .kicker{fill:#dbe6ff}
+    .background-dot{fill:#b9bda7;opacity:.42}
+    .cross-label{font-size:11px;fill:#8e255d;paint-order:stroke;stroke:#fbfbef;stroke-width:4px;stroke-linejoin:round;text-anchor:middle;pointer-events:none}
+    .notice{margin-top:12px;padding:10px 12px;border-radius:12px;background:#fff6e7;border:1px solid #f1d7aa;color:#7a571e;font-size:12px;line-height:1.8}
+
+    @media(max-width:980px){
+      .app{padding:12px}
+      .hero{align-items:stretch;flex-direction:column}
+      .status{width:100%;min-width:0}
+      .workspace{height:auto;grid-template-columns:minmax(0,1fr)}
+      .stage{height:68vh;min-height:520px;border-radius:20px}
+      .inspector{min-height:270px}
+      .toolbar button{flex:1 1 145px}
+      .toolbar .danger{margin-inline-start:0}
+      .footer{flex-direction:column;gap:5px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <span class="eyebrow">FSInfo · نسخه سبک بدون بیلد</span>
+        <h1>نقشه کلان‌روندهای آینده حوزه‌های علمیه</h1>
+        <p>نسخه استاتیک تعاملی؛ مستقیم روی هاست قابل آپلود است و برای اجرا به npm، Node یا Vite نیاز ندارد.</p>
+      </div>
+      <div class="status">
+        <strong>Static rescue · v0.1</strong>
+        <small>single-file / no-build</small>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <div class="stage" id="stage">
+        <svg id="map" viewBox="0 0 2800 1900" aria-label="نقشه تعاملی کلان‌روندها">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L8,4 L0,8 Z" fill="#b62770"></path>
+            </marker>
+            <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle class="background-dot" cx="1.2" cy="1.2" r="1"></circle>
+            </pattern>
+          </defs>
+          <rect id="panSurface" x="-6000" y="-6000" width="12000" height="12000" fill="url(#dots)"></rect>
+          <g id="viewport">
+            <g id="edges"></g>
+            <g id="edgeLabels"></g>
+            <g id="nodes"></g>
+          </g>
+        </svg>
+        <div class="hud">
+          <button id="zoomIn" title="بزرگ‌نمایی">+</button>
+          <button id="zoomOut" title="کوچک‌نمایی">−</button>
+          <button id="fit" title="نمایش کامل">⌂</button>
+        </div>
+        <div class="legend">
+          <div><span class="legend-line"></span><span>رابطه درون‌خوشه‌ای</span></div>
+          <div><span class="legend-line cross"></span><span>رابطه متقاطع اولیه</span></div>
+        </div>
+      </div>
+
+      <aside class="inspector" id="inspector">
+        <span class="eyebrow">ویرایشگر</span>
+        <h2>یک گره یا رابطه را انتخاب کنید</h2>
+        <p>گره‌ها را مستقیم روی نقشه جابه‌جا کنید. پس از انتخاب می‌توانید متن، رنگ و اندازه را اصلاح کنید.</p>
+        <div class="notice">روابط متقاطع فعلی نمونه اولیه‌اند و تا ثبت شاهد و تأیید پژوهشی نباید یافته نهایی تلقی شوند.</div>
+      </aside>
+    </section>
+
+    <nav class="toolbar" aria-label="ابزارهای ویرایش">
+      <button id="save">ذخیره در مرورگر</button>
+      <button id="toggleCross">پنهان‌کردن روابط متقاطع</button>
+      <button id="importBtn">ورود JSON</button>
+      <input id="importFile" class="hidden" type="file" accept=".json,application/json" />
+      <button id="exportJson">خروجی JSON</button>
+      <button id="exportSvg" class="primary">خروجی SVG</button>
+      <button id="reset" class="danger">بازنشانی</button>
+    </nav>
+
+    <footer class="footer">
+      <span>بدون وابستگی خارجی · HTML/CSS/JS/SVG</span>
+      <span>وضعیت داده: taxonomy اولیه؛ روابط متقاطع نیازمند QA پژوهشی هستند.</span>
+    </footer>
+  </main>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const STORAGE_KEY = 'fsinfo-static-v0.1';
+    const VIEW_W = 2800, VIEW_H = 1900;
+    const center = { x: 1400, y: 950 };
+    const macroRx = 930, macroRy = 660;
+
+    const clusters = [
+      {id:'MT01',title:'مدیریت جمعیت‌شناسی',color:'#FFD94A',trends:['سالمندی / میانسالی','طبقه پرجمعیت جدید','جایگزینی مراجع جدید و تحول فرایند مرجعیت و تقلید','خانواده‌گرایی','جمعیت و باروری','مهاجرت']},
+      {id:'MT02',title:'ساختارهای متحول قدرت در جهان آینده',color:'#C8A866',trends:['انتقال قدرت از غرب به شرق','اجتماع‌محوری','محلی‌گرایی','ظهور بیشتر نهادهای علمی‌دینی عراق','افزایش انسجام شیعی در منطقه']},
+      {id:'MT03',title:'هوش مصنوعی و داده‌محوری',color:'#5A62FF',trends:['تصمیم‌گیری داده‌محور','هوش مصنوعی اجتهاد','هوش مصنوعی دینی','دستیاران مجازی روحانی','فناوری زنجیره بلوکی (بلاک‌چین)']},
+      {id:'MT04',title:'تحول علم و معرفت',color:'#2F9CFF',trends:['دیجیتالی‌شدن نظام دانش','علم ۲ (باز و مشارکتی)','علوم محاسباتی','علوم شناختی','فناوری به جای علم','کاربردی‌شدن','آموزش شخصی‌سازی‌شده','آموزش مادام‌العمر','یادگیری حین اقدام','گسترش میان‌رشته‌گی']},
+      {id:'MT05',title:'معنویت‌گرایی',color:'#B8F34A',trends:['واگرایی، تنوع و تکثر دینی','افول سکولاریسم','معنویت‌گرایی‌های نوین دینی','تکنولوژی‌های معنویت','اقتصاد معنویت','تعامل عمیق','مشاغل مرتبط با معنا و روح']},
+      {id:'MT06',title:'تحول شناختی دین',color:'#A48BFF',trends:['اصل ساده‌سازی ـ دین ساده‌سازی‌شده','دین تصویری و نمادگرایانه','مونتاژ، کولاژ و شخصی‌سازی دینی','دینداری بدون مقام','دلبستگی به‌جای ایمان','دین به‌مثابه درمانگر (مراقبت معنوی)','دینداری به معنای خدمت‌رسانی','جایگزینی داده به‌جای معرفت','فناوری‌های شناختی']},
+      {id:'MT07',title:'شهرنشینی',color:'#62DF79',trends:['تبلیغ مسئله‌محور','طلبگی شهروندی','دین در عصر آسیب‌های اجتماعی']},
+      {id:'MT08',title:'زنانه‌شدن',color:'#EE8CAC',trends:['رشد طلاب خواهر','دین برای زنان (زن و خانواده به‌عنوان مخاطب کلیدی)','رشد زنانگی']},
+      {id:'MT09',title:'عصر بی‌نظمی',color:'#D05B89',trends:['بی‌اعتمادی فزاینده','مشارکتی شدن دین']},
+      {id:'MT10',title:'مهارت‌های آینده',color:'#FFB84D',trends:['عصر خلاقیت و کارآفرینی','مهارت‌محور شدن آموزش','بازاریابی محتوای دینی (اقتصاد توجه)','هم‌آفرینی خدمت‌رسانی دینی','روح زمانه بصری']},
+      {id:'MT11',title:'سبک زندگی سالم',color:'#67D6B0',trends:['پزشکی‌شدن همه‌چیز','اولویت پیشگیری','سلامت همه‌جانبه ـ سلامت معنوی','مراقبت بهداشتی خوداتکا']},
+      {id:'MT12',title:'تاب‌آوری',color:'#45C58A',trends:['تغییرات اقلیم و زیست‌محیط','توسعه پایدار','پایداری به‌عنوان اخلاق حسنه یا دین','الهیات تاب‌آوری','روایت‌گری امید فعال','الهیات آسیب‌پذیری','بازکشف ثروت‌های تمدنی']},
+      {id:'MT13',title:'تحول حکمرانی',color:'#7D8BFF',trends:['شفافیت','غیررسمی‌شدن','تمرکززدایی','گواهی‌گرایی','سازمان‌های چابک','یادگیری پیوسته و یادگیری حین عمل','شاملیت و تنوع','حوزه فراگیر','حکمرانی الگوریتمی','چالش توزیع در حکمرانی (مرحله اجرا)']},
+      {id:'MT14',title:'تحول زیست‌فناورانه',color:'#77C6FF',trends:['انسان سایبورگ','بهینه‌سازی ژنتیک تولید نسل']}
+    ];
+
+    const crossSeed = [
+      {id:'X-1',source:'MT03',target:'MT10',label:'هوش مصنوعی ← مهارت‌های آینده',kind:'cross',verified:false,evidence:''},
+      {id:'X-2',source:'MT03',target:'MT04',label:'هوش مصنوعی ← تحول دانش',kind:'cross',verified:false,evidence:''},
+      {id:'X-3',source:'MT07',target:'MT06',label:'شهرنشینی ← تحول شناختی دین',kind:'cross',verified:false,evidence:''}
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const svg = $('map'), viewport = $('viewport'), nodesLayer = $('nodes'), edgesLayer = $('edges'), labelsLayer = $('edgeLabels');
+    const inspector = $('inspector'), stage = $('stage');
+
+    let state = makeInitialState();
+    let selected = null;
+    let showCross = true;
+    let transform = { x: 0, y: 0, scale: 1 };
+    let drag = null;
+    let pan = null;
+
+    function makeInitialState(){
+      const nodes = [{
+        id:'CORE',x:center.x,y:center.y,w:230,h:150,label:'حوزه آینده',level:'core',color:'#354BFF',textSize:28,macroId:null
+      }];
+      const edges = [];
+      clusters.forEach((cluster,index)=>{
+        const angle = index / clusters.length * Math.PI * 2 - Math.PI/2;
+        const mx = center.x + Math.cos(angle)*macroRx;
+        const my = center.y + Math.sin(angle)*macroRy;
+        nodes.push({id:cluster.id,x:mx,y:my,w:205,h:105,label:cluster.title,level:'macro',color:cluster.color,textSize:18,macroId:cluster.id});
+        edges.push({id:'CORE-'+cluster.id,source:'CORE',target:cluster.id,kind:'hierarchy',label:'',verified:true,evidence:'',color:cluster.color,width:2.2});
+        const spread = Math.max(1,cluster.trends.length-1);
+        cluster.trends.forEach((trend,ti)=>{
+          const fan=(ti/spread-.5)*1.55;
+          const outward=angle+fan;
+          const radius=235+(ti%2)*42;
+          const id=cluster.id+'-T'+String(ti+1).padStart(2,'0');
+          nodes.push({id,x:mx+Math.cos(outward)*radius,y:my+Math.sin(outward)*radius,w:175,h:68,label:trend,level:'trend',color:cluster.color,textSize:13,macroId:cluster.id});
+          edges.push({id:cluster.id+'-'+id,source:cluster.id,target:id,kind:'hierarchy',label:'',verified:true,evidence:'',color:cluster.color,width:1.6});
+        });
+      });
+      crossSeed.forEach(e=>edges.push({...e,color:'#B62770',width:2.2}));
+      return {version:'static-0.1',nodes,edges};
+    }
+
+    function load(){
+      try{
+        const raw=localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const parsed=JSON.parse(raw);
+        if(Array.isArray(parsed.nodes)&&Array.isArray(parsed.edges)) state=parsed;
+      }catch(_){}
+    }
+
+    function save(){
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      flash('ذخیره شد');
+    }
+
+    function nodeById(id){ return state.nodes.find(n=>n.id===id); }
+
+    function mix(hex, amount=.88){
+      const c=hex.replace('#','');
+      const n=parseInt(c,16);
+      const r=n>>16,g=n>>8&255,b=n&255;
+      const nr=Math.round(r*(1-amount)+255*amount);
+      const ng=Math.round(g*(1-amount)+255*amount);
+      const nb=Math.round(b*(1-amount)+255*amount);
+      return '#'+[nr,ng,nb].map(v=>v.toString(16).padStart(2,'0')).join('');
+    }
+
+    function escapeXml(s){
+      return String(s).replace(/[<>&"']/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[ch]));
+    }
+
+    function wrap(label,max){
+      const words=String(label).trim().split(/\s+/);
+      const lines=[]; let line='';
+      words.forEach(word=>{
+        const test=line?line+' '+word:word;
+        if(test.length>max&&line){lines.push(line);line=word}else line=test;
+      });
+      if(line)lines.push(line);
+      return lines.slice(0,4);
+    }
+
+    function render(){
+      edgesLayer.innerHTML='';
+      labelsLayer.innerHTML='';
+      nodesLayer.innerHTML='';
+
+      state.edges.forEach(e=>{
+        if(e.kind==='cross'&&!showCross) return;
+        const a=nodeById(e.source), b=nodeById(e.target);
+        if(!a||!b)return;
+        const dx=b.x-a.x, dy=b.y-a.y;
+        const bend=e.kind==='cross'?.22:.08;
+        const cx=(a.x+b.x)/2-dy*bend;
+        const cy=(a.y+b.y)/2+dx*bend;
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('d',`M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`);
+        path.setAttribute('class','edge '+(e.kind==='cross'?'cross':'hierarchy')+(selected?.type==='edge'&&selected.id===e.id?' selected':''));
+        path.setAttribute('stroke',e.color||'#6471a5');
+        path.setAttribute('stroke-width',e.width||2);
+        if(e.kind==='cross')path.setAttribute('marker-end','url(#arrow)');
+        path.dataset.id=e.id;
+        path.addEventListener('pointerdown',ev=>{ev.stopPropagation();selectEdge(e.id)});
+        edgesLayer.appendChild(path);
+        if(e.label&&e.kind==='cross'){
+          const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+          t.setAttribute('x',cx);t.setAttribute('y',cy-8);t.setAttribute('class','cross-label');
+          t.textContent=e.label;labelsLayer.appendChild(t);
+        }
+      });
+
+      state.nodes.forEach(n=>{
+        const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+        g.setAttribute('class','node '+n.level+(selected?.type==='node'&&selected.id===n.id?' selected':''));
+        g.setAttribute('transform',`translate(${n.x},${n.y})`);
+        g.dataset.id=n.id;
+
+        const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute('x',-n.w/2);rect.setAttribute('y',-n.h/2);
+        rect.setAttribute('width',n.w);rect.setAttribute('height',n.h);
+        rect.setAttribute('rx',n.level==='core'?75:n.level==='macro'?52:18);
+        rect.setAttribute('fill',n.level==='core'?'#2944ef':mix(n.color,.84));
+        rect.setAttribute('stroke',n.level==='core'?'#3949ff':n.color);
+        g.appendChild(rect);
+
+        const kicker=document.createElementNS('http://www.w3.org/2000/svg','text');
+        kicker.setAttribute('class','kicker');
+        kicker.setAttribute('y',-Math.min(22,n.h*.24));
+        kicker.textContent=n.level==='core'?'هسته':n.level==='macro'?'کلان‌روند':'روند';
+        g.appendChild(kicker);
+
+        const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+        text.setAttribute('font-size',n.textSize||14);
+        const max=n.level==='trend'?23:n.level==='macro'?26:18;
+        const lines=wrap(n.label,max);
+        const lineH=(n.textSize||14)*1.35;
+        const startY=(lines.length-1)*lineH/-2 + (n.level==='trend'?7:8);
+        lines.forEach((line,i)=>{
+          const sp=document.createElementNS('http://www.w3.org/2000/svg','tspan');
+          sp.setAttribute('x','0');sp.setAttribute('y',String(startY+i*lineH));
+          sp.textContent=line;text.appendChild(sp);
+        });
+        g.appendChild(text);
+
+        g.addEventListener('pointerdown',ev=>beginNodeDrag(ev,n.id));
+        g.addEventListener('click',ev=>{ev.stopPropagation();selectNode(n.id)});
+        nodesLayer.appendChild(g);
+      });
+      applyTransform();
+    }
+
+    function selectNode(id){selected={type:'node',id};render();renderInspector()}
+    function selectEdge(id){selected={type:'edge',id};render();renderInspector()}
+    function clearSelection(){selected=null;render();renderInspector()}
+
+    function renderInspector(){
+      if(!selected){
+        inspector.innerHTML='<span class="eyebrow">ویرایشگر</span><h2>یک گره یا رابطه را انتخاب کنید</h2><p>گره‌ها را مستقیم روی نقشه جابه‌جا کنید. پس از انتخاب می‌توانید متن، رنگ و اندازه را اصلاح کنید.</p><div class="notice">روابط متقاطع فعلی نمونه اولیه‌اند و تا ثبت شاهد و تأیید پژوهشی نباید یافته نهایی تلقی شوند.</div>';
+        return;
+      }
+      if(selected.type==='node'){
+        const n=nodeById(selected.id);if(!n)return;
+        inspector.innerHTML=`
+          <span class="eyebrow">ویرایشگر گره</span>
+          <h2>${escapeXml(n.label)}</h2>
+          <label>متن<textarea id="nLabel" rows="3">${escapeXml(n.label)}</textarea></label>
+          <div class="grid">
+            <label>رنگ<input id="nColor" type="color" value="${n.color}"></label>
+            <label>اندازه متن<input id="nText" type="number" min="10" max="42" value="${n.textSize}"></label>
+            <label>عرض<input id="nW" type="number" min="100" max="480" value="${n.w}"></label>
+            <label>ارتفاع<input id="nH" type="number" min="52" max="280" value="${n.h}"></label>
+          </div>
+          <div class="meta"><span>شناسه</span><code>${n.id}</code></div>`;
+        bind('nLabel','input',v=>n.label=v);
+        bind('nColor','input',v=>n.color=v);
+        bind('nText','input',v=>n.textSize=+v);
+        bind('nW','input',v=>n.w=+v);
+        bind('nH','input',v=>n.h=+v);
+      }else{
+        const e=state.edges.find(x=>x.id===selected.id);if(!e)return;
+        inspector.innerHTML=`
+          <span class="eyebrow">ویرایشگر رابطه</span>
+          <h2>${escapeXml(e.label||'رابطه بدون برچسب')}</h2>
+          <label>برچسب<textarea id="eLabel" rows="3">${escapeXml(e.label||'')}</textarea></label>
+          <label>شاهد / یادداشت پژوهشی<textarea id="eEvidence" rows="4" placeholder="متن شاهد، صفحه منبع یا توضیح اعتبار رابطه">${escapeXml(e.evidence||'')}</textarea></label>
+          <div class="grid">
+            <label>رنگ<input id="eColor" type="color" value="${e.color||'#b62770'}"></label>
+            <label>ضخامت<input id="eWidth" type="number" min="1" max="12" step=".5" value="${e.width||2}"></label>
+          </div>
+          <label>نوع رابطه
+            <select id="eKind">
+              <option value="hierarchy">درون‌خوشه‌ای</option>
+              <option value="cross">متقاطع</option>
+              <option value="reinforces">تقویت‌کننده</option>
+              <option value="inhibits">بازدارنده</option>
+              <option value="possible_effect">اثر احتمالی</option>
+            </select>
+          </label>
+          <label class="check"><input id="eVerified" type="checkbox" ${e.verified?'checked':''}><span>رابطه پژوهشی تأیید شده است</span></label>
+          <div class="meta"><span>شناسه یال</span><code>${e.id}</code></div>`;
+        $('eKind').value=e.kind;
+        bind('eLabel','input',v=>e.label=v);
+        bind('eEvidence','input',v=>e.evidence=v,false);
+        bind('eColor','input',v=>e.color=v);
+        bind('eWidth','input',v=>e.width=+v);
+        bind('eKind','change',v=>e.kind=v);
+        $('eVerified').addEventListener('change',ev=>{e.verified=ev.target.checked;render()});
+      }
+    }
+
+    function bind(id,event,fn,rerender=true){
+      $(id).addEventListener(event,ev=>{fn(ev.target.value);if(rerender)render()});
+    }
+
+    function clientToWorld(clientX,clientY){
+      const r=svg.getBoundingClientRect();
+      const sx=VIEW_W/r.width, sy=VIEW_H/r.height;
+      const x=(clientX-r.left)*sx, y=(clientY-r.top)*sy;
+      return {x:(x-transform.x)/transform.scale,y:(y-transform.y)/transform.scale};
+    }
+
+    function beginNodeDrag(ev,id){
+      if(ev.button!==0)return;
+      ev.stopPropagation();
+      const n=nodeById(id);
+      const p=clientToWorld(ev.clientX,ev.clientY);
+      drag={id,dx:p.x-n.x,dy:p.y-n.y,pointerId:ev.pointerId};
+      svg.setPointerCapture(ev.pointerId);
+      selectNode(id);
+    }
+
+    svg.addEventListener('pointermove',ev=>{
+      if(drag){
+        const n=nodeById(drag.id);const p=clientToWorld(ev.clientX,ev.clientY);
+        n.x=p.x-drag.dx;n.y=p.y-drag.dy;render();return;
+      }
+      if(pan){
+        const r=svg.getBoundingClientRect();
+        const sx=VIEW_W/r.width, sy=VIEW_H/r.height;
+        transform.x=pan.x+(ev.clientX-pan.cx)*sx;
+        transform.y=pan.y+(ev.clientY-pan.cy)*sy;
+        applyTransform();
+      }
+    });
+
+    svg.addEventListener('pointerup',ev=>{
+      if(drag||pan){try{svg.releasePointerCapture(ev.pointerId)}catch(_){}}
+      drag=null;pan=null;
+    });
+
+    $('panSurface').addEventListener('pointerdown',ev=>{
+      if(ev.button!==0)return;
+      clearSelection();
+      pan={cx:ev.clientX,cy:ev.clientY,x:transform.x,y:transform.y};
+      svg.setPointerCapture(ev.pointerId);
+    });
+
+    svg.addEventListener('wheel',ev=>{
+      ev.preventDefault();
+      const r=svg.getBoundingClientRect();
+      const sx=VIEW_W/r.width, sy=VIEW_H/r.height;
+      const px=(ev.clientX-r.left)*sx, py=(ev.clientY-r.top)*sy;
+      const before={x:(px-transform.x)/transform.scale,y:(py-transform.y)/transform.scale};
+      const factor=ev.deltaY<0?1.12:.89;
+      transform.scale=Math.max(.35,Math.min(2.4,transform.scale*factor));
+      transform.x=px-before.x*transform.scale;
+      transform.y=py-before.y*transform.scale;
+      applyTransform();
+    },{passive:false});
+
+    function applyTransform(){
+      viewport.setAttribute('transform',`translate(${transform.x} ${transform.y}) scale(${transform.scale})`);
+    }
+
+    function zoom(factor){
+      const cx=VIEW_W/2,cy=VIEW_H/2;
+      const before={x:(cx-transform.x)/transform.scale,y:(cy-transform.y)/transform.scale};
+      transform.scale=Math.max(.35,Math.min(2.4,transform.scale*factor));
+      transform.x=cx-before.x*transform.scale;transform.y=cy-before.y*transform.scale;applyTransform();
+    }
+
+    function fit(){transform={x:0,y:0,scale:1};applyTransform()}
+
+    function exportJson(){
+      const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json;charset=utf-8'});
+      downloadBlob(blob,'fsinfo-layout.json');
+    }
+
+    function exportSvg(){
+      const clone=svg.cloneNode(true);
+      clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+      clone.setAttribute('width',String(VIEW_W));clone.setAttribute('height',String(VIEW_H));
+      const style=document.createElementNS('http://www.w3.org/2000/svg','style');
+      style.textContent=`
+        text{font-family:Vazirmatn,Sahel,Tahoma,Arial,sans-serif}
+        .edge{fill:none;stroke-linecap:round}.edge.hierarchy{opacity:.58}.edge.cross{stroke:#b62770;stroke-dasharray:10 13;opacity:.82}
+        .node rect{stroke-width:1.4}.node.macro rect{stroke-width:2.3}.node.core rect{stroke-width:3}
+        .node text{text-anchor:middle;dominant-baseline:middle;fill:#17234f;font-weight:800}.node.core text{fill:#fff}
+        .node .kicker{font-size:10px;font-weight:900;opacity:.7}.node.core .kicker{fill:#dbe6ff}
+        .background-dot{fill:#b9bda7;opacity:.42}.cross-label{font-size:11px;fill:#8e255d;paint-order:stroke;stroke:#fbfbef;stroke-width:4px;text-anchor:middle}
+      `;
+      clone.insertBefore(style,clone.firstChild);
+      const blob=new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'});
+      downloadBlob(blob,'fsinfo-map.svg');
+    }
+
+    function downloadBlob(blob,name){
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+
+    function importJson(file){
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try{
+          const parsed=JSON.parse(reader.result);
+          if(!Array.isArray(parsed.nodes)||!Array.isArray(parsed.edges))throw new Error();
+          state=parsed;selected=null;render();renderInspector();save();
+        }catch(_){alert('فایل JSON معتبر FSInfo نیست.')}
+      };
+      reader.readAsText(file,'utf-8');
+    }
+
+    function flash(message){
+      const old=$('save').textContent;$('save').textContent=message;
+      setTimeout(()=>$('save').textContent=old,900);
+    }
+
+    $('save').addEventListener('click',save);
+    $('toggleCross').addEventListener('click',()=>{
+      showCross=!showCross;$('toggleCross').textContent=showCross?'پنهان‌کردن روابط متقاطع':'نمایش روابط متقاطع';render();
+    });
+    $('exportJson').addEventListener('click',exportJson);
+    $('exportSvg').addEventListener('click',exportSvg);
+    $('importBtn').addEventListener('click',()=>$('importFile').click());
+    $('importFile').addEventListener('change',ev=>{const f=ev.target.files&&ev.target.files[0];if(f)importJson(f);ev.target.value=''});
+    $('reset').addEventListener('click',()=>{
+      if(!confirm('چیدمان و تغییرات محلی بازنشانی شود؟'))return;
+      localStorage.removeItem(STORAGE_KEY);state=makeInitialState();selected=null;showCross=true;fit();render();renderInspector();
+    });
+    $('zoomIn').addEventListener('click',()=>zoom(1.2));
+    $('zoomOut').addEventListener('click',()=>zoom(.83));
+    $('fit').addEventListener('click',fit);
+
+    load();
+    render();
+    renderInspector();
+  })();
+  </script>
+</body>
+</html>
