@@ -781,3 +781,25 @@ Release discipline:
 - public `index.html` remains unchanged
 - v0.1–v0.12 remain rollback-safe
 - physical-device QA is still required before any public promotion
+
+
+## v0.14 Coherent Core — owner-corrected release train
+
+Owner corrections:
+- v0.9 tag speed is the preferred speed
+- presentation justification matters
+- one optional trend-depth presentation layer matters
+- major panels must leave complementary galaxy space
+- mobile must show one major bottom sheet at a time
+- swipe must work
+- every future version is a new immutable folder + /t list item
+
+Implementation:
+- 850ms tag cadence from v0.9, but only after narration completion
+- exact trend context verified for 78/78 trends
+- one depth only: macro → trend
+- Book/Decision temporarily replace and pause Presentation rather than stack
+- viewport controller owns free-space projection
+- live root remains v0.9
+
+From this point, PROJECT_RULES.md and RELEASE_PLAN.md govern continuation.

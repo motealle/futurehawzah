@@ -381,3 +381,19 @@ Deferred on purpose:
 - any new 3D/runtime dependency
 
 Public `index.html` remains unchanged.
+
+
+## v0.14 Coherent Core
+Entry: `index-v0.14-coherent-core.html`
+Prompt: `index-v0.14-coherent-core.prompt.md`
+
+Owner-confirmed scope:
+- v0.9 tag reveal cadence (850ms), gated until narration completion
+- justified presentation text
+- optional one-level trend presentation after macrotrend presentation
+- exact book-derived trend narration for all 78 trends
+- complementary galaxy viewport around major panels
+- mobile single-major-sheet rule
+- horizontal swipe for presentation/intro
+
+Live root remains v0.9 unless explicitly promoted.

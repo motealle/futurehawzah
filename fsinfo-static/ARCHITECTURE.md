@@ -524,3 +524,26 @@ Fullscreen is still user-triggered. Dynamic viewport handling may improve visibl
 
 ### Scope rule
 Stabilization releases may remove planned features from scope when they increase gesture/state complexity without solving a validated user problem.
+
+
+## v0.14 coherent-core architecture
+
+```
+v0.12 immutable book payload
+           ↓
+v0.14 content-service
+   ↙                 ↘
+book-tools          app
+   ↓                 ↑
+major-panel event   gesture / viewport
+                        ↓
+                 galaxy projection
+```
+
+Viewport owns the projection rectangle. On mobile, the active bottom sheet reserves everything below its top. On desktop/tablet, an active side panel reserves that side and the galaxy recenters into the complement.
+
+Presentation has exactly two depths:
+1. macrotrend narration + tags
+2. one trend narration
+
+Depth-2 text comes only from exact v0.12 `trend_contexts`. Tag cadence is restored to v0.9 (850ms) while the v0.12+ narration-complete gate remains mandatory.

@@ -1,0 +1,14 @@
+import fs from "node:fs";
+const read=p=>fs.readFileSync(p,"utf8");
+const html=read("fsinfo-static/index-v0.14-coherent-core.html"),app=read("fsinfo-static/v0.14/app.js"),css=read("fsinfo-static/v0.14/styles.css"),gesture=read("fsinfo-static/v0.14/gesture-controller.js"),viewport=read("fsinfo-static/v0.14/viewport-controller.js"),content=read("fsinfo-static/v0.14/content-service.js");
+for(const p of ["app.js","gesture-controller.js","viewport-controller.js","shell-controller.js","book-tools.js","content-service.js"])new Function(read("fsinfo-static/v0.14/"+p));
+const a=(x,m)=>{if(!x)throw new Error(m)};
+a(app.includes("tagCadence:850"),"v0.9 tag cadence missing");
+a(app.includes("if(!presentation.textComplete)return"),"narration gate missing");
+a(html.includes('id="presentDeep"')&&app.includes("presentation.inTrend"),"deep presentation missing");
+a(content.includes("trendPresentationText"),"trend content adapter missing");
+a(css.includes("text-align:justify!important"),"justify missing");
+a(gesture.includes("bindSwipe"),"swipe missing");
+a(viewport.includes('document.querySelector(".info")'),"main panel viewport missing");
+let found=0;for(let i=1;i<=14;i++){const id=String(i).padStart(2,"0"),s=read("fsinfo-static/v0.12/sections/MT"+id+".js");found+=(s.match(/"found": true/g)||[]).length}a(found===78,"expected 78 exact trend contexts, got "+found);
+console.log("v0.14 QA passed; exact trend contexts:",found);

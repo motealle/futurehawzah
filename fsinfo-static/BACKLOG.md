@@ -1006,3 +1006,51 @@ Deferred because benefit/risk is currently unfavorable:
 - [ ] physical Android Chrome
 - [ ] tablet portrait/landscape
 - [ ] owner pacing/reading acceptance
+
+
+## Structured release train — after-v0.9 reset
+
+### P0 — v0.14 Coherent Core ✅ implementation
+- [x] v0.9 tag cadence = 850ms
+- [x] narration-complete gate before tag reveal
+- [x] justified Persian presentation
+- [x] optional one deeper level: macro → trend
+- [x] exact book context coverage: 78/78 trends
+- [x] complementary galaxy viewport
+- [x] mobile single major sheet
+- [x] Book/Decision pauses active presentation instead of stacking
+- [x] horizontal presentation/intro swipe
+- [x] previous versions untouched
+- [x] new /t/14 snapshot contract
+
+### v0.14 acceptance gates
+- [ ] owner accepts Book proportions
+- [ ] owner accepts presentation text/effect
+- [ ] owner accepts 850ms tag rhythm
+- [ ] owner accepts trend-depth sequence
+- [ ] owner confirms focused galaxy is never hidden by major panels
+- [ ] physical iPhone Safari
+- [ ] Android Chrome
+- [ ] tablet portrait/landscape
+- [ ] desktop composition
+
+### v0.15 — stabilization only
+No new features. Fix/tune only issues found in v0.14 acceptance:
+- orbit feel
+- panel geometry
+- swipe threshold
+- text/tag pacing
+- browser/fullscreen behavior
+
+### v0.16 — context-depth refinement after acceptance
+- trend-level Book navigation and breadcrumbs
+- review all 78 trend excerpt lengths
+- manual one-level trend navigation refinement
+
+### Frozen
+- radial context menu
+- forced full-screen Book reader
+- more presentation depths
+- new decision dashboard
+- planet-material/dolly polish
+- heavy 3D framework/runtime change

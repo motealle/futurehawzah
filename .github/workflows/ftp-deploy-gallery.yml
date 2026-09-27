@@ -20,15 +20,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Static QA v0.14
+        run: node scripts/qa-v014.mjs
+
       - name: Build immutable version gallery
         shell: bash
         run: |
           set -euo pipefail
           chmod +x scripts/build-t-gallery.sh
           scripts/build-t-gallery.sh _t-build
-          for v in $(seq -w 1 13); do test -f "_t-build/$v/index.html"; done
+          for v in $(seq -w 1 14); do test -f "_t-build/$v/index.html"; done
           grep -q '09 (Live)' _t-build/index.html
-          grep -q 'href="./13/"' _t-build/index.html
+          grep -q 'href="./14/"' _t-build/index.html
 
       - name: Install lftp
         run: |
@@ -72,7 +75,7 @@ jobs:
             cd .;
             get t/index.html -o /tmp/t-index.html;
             get t/09/index.html -o /tmp/t-09-index.html;
-            cls -ld t/01 t/02 t/03 t/04 t/05 t/06 t/07 t/08 t/09 t/10 t/11 t/12 t/13;
+            cls -ld t/01 t/02 t/03 t/04 t/05 t/06 t/07 t/08 t/09 t/10 t/11 t/12 t/13 t/14;
             bye
           "
           cmp _t-build/index.html /tmp/t-index.html
