@@ -1,0 +1,60 @@
+name: Migrate FSInfo from sites
+
+on:
+  push:
+    paths:
+      - ".github/workflows/migrate-from-sites.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout futurehawzah
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Clone source branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --single-branch             --branch feature/fsinfo-static             https://github.com/motealle/sites.git             "$RUNNER_TEMP/sites"
+
+      - name: Copy both project tracks
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/sites/modiremelli.ir"
+          test -d "$SRC/fsinfo-static"
+          test -d "$SRC/fsinfo"
+
+          mkdir -p fsinfo-static fsinfo
+          rsync -a --delete "$SRC/fsinfo-static/" "fsinfo-static/"
+          rsync -a --delete "$SRC/fsinfo/" "fsinfo/"
+
+          diff -qr "$SRC/fsinfo-static" "fsinfo-static"
+          diff -qr "$SRC/fsinfo" "fsinfo"
+
+          echo "fsinfo-static files: $(find fsinfo-static -type f | wc -l)"
+          echo "fsinfo files: $(find fsinfo -type f | wc -l)"
+
+      - name: Commit and push migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add fsinfo-static fsinfo
+
+          if git diff --cached --quiet; then
+            echo "Nothing to migrate."
+            exit 0
+          fi
+
+          git commit -m "migrate: import FSInfo projects from motealle/sites"
+          git push origin HEAD:main
