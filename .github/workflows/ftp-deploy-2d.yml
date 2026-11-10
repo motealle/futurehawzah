@@ -1,0 +1,102 @@
+name: Deploy 2D atlas to /2d
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "2d/**"
+      - ".github/workflows/ftp-deploy-2d.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: futurehawzah-deploy-2d
+  cancel-in-progress: false
+
+jobs:
+  deploy-2d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate numbered snapshots and index
+        env:
+          BEFORE: ${{ github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          root = Path("2d")
+          index = (root / "index.html").read_text()
+          versions = {p.name for p in root.iterdir() if p.is_dir() and re.fullmatch(r"[0-9]{2,}", p.name)}
+          links = set(re.findall(r'href="\./([0-9]{2,})/"', index))
+          if not versions or links != versions:
+              raise SystemExit("The /2d index must link to every numbered snapshot.")
+          for version in versions:
+              if not (root / version / "index.html").is_file():
+                  raise SystemExit(f"Missing index for {version}")
+          before = os.environ["BEFORE"]
+          if before and set(before) != {"0"}:
+              for path in subprocess.check_output(
+                  ["git", "diff", "--name-only", "--diff-filter=DMRT", before, "HEAD", "--", "2d"]
+              ).decode().splitlines():
+                  if re.match(r"2d/[0-9]{2,}/", path):
+                      raise SystemExit(f"Published snapshots are immutable: {path}")
+          PY
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Upload snapshots and then publish the index
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME_FUTUREHAWZAH_IR }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD_FUTUREHAWZAH_IR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for directory in 2d/[0-9]*/; do
+            version="${directory%/}"
+            lftp -u "$FTP_USER","$FTP_PASSWORD" "$FTP_SERVER" -e "
+              set cmd:fail-exit yes;
+              set net:max-retries 2;
+              set net:timeout 20;
+              set ftp:ssl-allow yes;
+              set ssl:verify-certificate no;
+              mkdir -p $version;
+              mirror -R --verbose --parallel=4 $version $version;
+              bye
+            "
+          done
+          lftp -u "$FTP_USER","$FTP_PASSWORD" "$FTP_SERVER" -e "
+            set cmd:fail-exit yes;
+            set net:max-retries 2;
+            set net:timeout 20;
+            set ftp:ssl-allow yes;
+            set ssl:verify-certificate no;
+            mkdir -p 2d;
+            put 2d/index.html -o 2d/index.html;
+            bye
+          "
+
+      - name: Verify public URLs and file contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in 2d/index.html 2d/*/index.html; do
+            curl -fsSL --retry 3 --max-time 40 \
+              -o /tmp/futurehawzah-2d.html "https://futurehawzah.ir/${file%index.html}?deploy=${GITHUB_SHA}"
+            cmp "$file" /tmp/futurehawzah-2d.html
+          done
