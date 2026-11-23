@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#091422">
+<title>رصدخانهٔ آینده | اطلس دوبعدی حوزه‌های علمیه</title>
+<link rel="canonical" href="https://futurehawzah.ir/2d/">
+<link rel="stylesheet" href="/2d/t/06/atlas.css">
+<link rel="preload" href="/2d/t/06/sahel.ttf" as="font" type="font/ttf" crossorigin>
+<script type="module" src="/2d/t/06/atlas.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/" aria-label="ورودی رصدخانهٔ آینده"><span class="emblem" aria-hidden="true"></span><span>رصدخانهٔ آینده</span></a>
+  <nav aria-label="پیوندهای اطلس"><a href="/3d/">کهکشان سه‌بعدی</a><a href="/2d/t/">نسخه‌ها و دانلود</a></nav>
+</header>
+<main>
+  <div class="heading"><div><h1>اطلس آیندهٔ حوزه‌های علمیه</h1><p>۱۴ کلان‌روند و ۷۸ روند</p></div>
+    <div class="controls" aria-label="کنترل‌های نقشه">
+      <button id="find" class="find-button" type="button"><span aria-hidden="true">⌕</span> جست‌وجو</button>
+      <button id="tour" type="button"><span aria-hidden="true">▷</span> مرور کلان‌روندها</button>
+      <button id="fit" class="desktop-control" type="button" aria-label="نمای کامل" title="نمای کامل">↺</button>
+      <button id="zoom-in" class="desktop-control" type="button" aria-label="بزرگ‌نمایی">+</button>
+      <button id="zoom-out" class="desktop-control" type="button" aria-label="کوچک‌نمایی">−</button>
+    </div>
+  </div>
+  <p id="status" role="status">در حال آماده‌سازی نقشه…</p>
+  <div id="viewport" class="viewport" aria-label="نقشهٔ گسترده" hidden><div id="scaler"><div id="canvas"></div></div></div>
+  <div id="mobile" class="mobile-map" aria-label="نقشهٔ عمودی" hidden></div>
+</main>
+<footer><span>شورای عالی حوزه علمیه خراسان</span><a href="/">ورودی رصدخانه</a></footer>
+<dialog id="story" aria-labelledby="story-title">
+  <div class="dialog-bar"><button type="button" id="story-close" aria-label="بستن روایت">×</button><span id="story-kind"></span><button type="button" id="story-share">پیوند</button></div>
+  <div class="story-image" id="story-image"><img id="art" alt="" decoding="async"></div>
+  <div class="story-body">
+    <button type="button" id="story-parent" class="parent-button" hidden></button>
+    <h2 id="story-title"></h2>
+    <p id="story-deck" class="deck" hidden></p>
+    <div class="narration"><p id="story-ghost"></p><p id="story-typed" aria-hidden="true"></p></div>
+    <button type="button" id="story-skip" class="quiet" hidden>نمایش کامل متن</button>
+    <div id="story-details" hidden><dl id="story-notes"></dl><p id="story-question" hidden></p><div id="story-trends"></div><div id="story-relations"></div></div>
+  </div>
+  <div class="story-nav"><button type="button" id="story-prev">روایت پیشین</button><span id="story-position"></span><button type="button" id="story-next">روایت بعدی</button></div>
+</dialog>
+<dialog id="search" aria-labelledby="search-title"><div class="dialog-bar"><button id="search-close" type="button" aria-label="بستن جست‌وجو">×</button><h2 id="search-title">جست‌وجوی نقشه</h2></div><div class="panel"><label for="query">نام کلان‌روند یا روند</label><input id="query" type="search" autocomplete="off"><p id="matches" role="status"></p><ul id="results"></ul></div></dialog>
+<dialog id="admin" aria-labelledby="admin-title">
+  <div class="dialog-bar"><button id="admin-close" type="button" aria-label="بستن تنظیمات">×</button><h2 id="admin-title">تنظیمات نمایش</h2></div>
+  <form id="preferences" class="panel">
+    <label><input type="checkbox" name="typing"> تایپ تدریجی متن</label>
+    <label><input type="checkbox" name="images"> نمایش تصویر روایت</label>
+    <label><input type="checkbox" name="relations"> نمایش پیوندهای میان شاخه‌ها</label>
+    <label><input type="checkbox" name="motion"> حرکت پوستهٔ روایت</label>
+    <label>پوستهٔ نقشه <select name="theme"><option value="night">شب</option><option value="light">روشن</option></select></label>
+    <p class="muted">پیش‌نمایش در همین مرورگر ذخیره می‌شود. برای اعمال همگانی، فایل خروجی را در مسیر پیش‌فرض‌ها منتشر کنید.</p>
+    <div class="settings-actions"><button type="submit">ذخیرهٔ پیش‌نمایش</button><button type="button" id="export">دریافت defaults.json</button><button type="button" id="restore">بازگشت به پیش‌فرض سایت</button></div>
+    <a href="/2d/t/#content">راهنمای فایل‌های محتوا و تنظیمات</a><p id="admin-status" role="status"></p>
+  </form>
+</dialog>
+</body>
+</html>
