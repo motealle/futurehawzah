@@ -36,6 +36,8 @@ jobs:
         run: |
           set -euo pipefail
           node --check 2d/t/06/atlas.js
+          node --check 2d/t/07/atlas.js
+          node --check fsinfo-static/v0.15/app.js
           cmp 2d/index.html 2d/t/06/index.html
           if [[ -n "$BEFORE" && ! "$BEFORE" =~ ^0+$ ]]; then
             if git diff --name-only --diff-filter=DMRT "$BEFORE" HEAD -- 2d | grep -E '^2d/([0-9]+|t/[0-9]+)/'; then
@@ -62,10 +64,11 @@ jobs:
             set ftp:ssl-allow yes;
             set ssl:verify-certificate no;
             cd .;
-            mkdir -p downloads/exhibition 2d/content 2d/t/06 3d/v0.9 3d/t;
+            mkdir -p downloads/exhibition 2d/content 2d/t/06 2d/t/07 3d/v0.9 3d/t;
             mirror -R --parallel=4 _release/downloads downloads/exhibition;
             mirror -R --parallel=4 2d/content 2d/content;
             mirror -R --parallel=4 2d/t/06 2d/t/06;
+            mirror -R --parallel=4 2d/t/07 2d/t/07;
             mirror -R --parallel=4 fsinfo-static/v0.9 3d/v0.9;
             mirror -R --parallel=4 _release/3d-tests 3d/t;
             put portal.css -o portal.css;
@@ -88,10 +91,12 @@ jobs:
       - name: Verify public pages and original PDF bytes
         run: |
           set -euo pipefail
-          for file in index.html 2d/index.html 2d/t/index.html 2d/t/06/index.html 3d/index.html 3d/t/index.html; do
+          for file in index.html 2d/index.html 2d/t/index.html 2d/t/06/index.html 2d/t/07/index.html 3d/index.html 3d/t/index.html; do
             curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/${file%index.html}?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live.html
             cmp "$file" /tmp/futurehawzah-live.html
           done
+          curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/3d/t/15/?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live-15.html
+          cmp _release/3d-tests/15/index.html /tmp/futurehawzah-live-15.html
           mkdir -p _release/public
           for file in _release/downloads/*.pdf; do
             name="${file##*/}"
