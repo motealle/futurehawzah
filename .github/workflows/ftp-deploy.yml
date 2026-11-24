@@ -97,8 +97,8 @@ jobs:
             curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/${file%index.html}?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live.html
             cmp "$file" /tmp/futurehawzah-live.html
           done
-          curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/3d/t/16/?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live-15.html
-          cmp _release/3d-tests/16/index.html /tmp/futurehawzah-live-15.html
+          curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/3d/t/17/?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live-15.html
+          cmp _release/3d-tests/17/index.html /tmp/futurehawzah-live-15.html
           mkdir -p _release/public
           for file in _release/downloads/*.pdf; do
             name="${file##*/}"
