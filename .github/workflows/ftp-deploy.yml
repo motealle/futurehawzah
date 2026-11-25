@@ -38,7 +38,11 @@ jobs:
           node --check 2d/t/06/atlas.js
           node --check 2d/t/07/atlas.js
           node --check fsinfo-static/v0.15/app.js
-          cmp 2d/index.html 2d/t/06/index.html
+          node --check fsinfo-static/v0.18/app.js
+          node --check 2d/t/09/atlas.js
+          php -l 3d/review/account.php
+          diff -u 2d/index.html <(sed 's|https://futurehawzah.ir/2d/t/09/|https://futurehawzah.ir/2d/|' 2d/t/09/index.html)
+          diff -u 3d/index.html <(sed -E 's#(src|href)="(v0\.[0-9]+/)#\1="/3d/t/18/\2#g' fsinfo-static/index-v0.18-atlas.html)
           if [[ -n "$BEFORE" && ! "$BEFORE" =~ ^0+$ ]]; then
             if git diff --name-only --diff-filter=DMRT "$BEFORE" HEAD -- 2d | grep -E '^2d/([0-9]+|t/[0-9]+)/'; then
               echo 'Numbered 2D releases are immutable.'
@@ -64,12 +68,13 @@ jobs:
             set ftp:ssl-allow yes;
             set ssl:verify-certificate no;
             cd .;
-            mkdir -p downloads/exhibition 2d/content 2d/t/06 2d/t/07 2d/t/08 3d/review 3d/v0.9 3d/t;
+            mkdir -p downloads/exhibition 2d/content 2d/t/06 2d/t/07 2d/t/08 2d/t/09 3d/review 3d/v0.9 3d/t;
             mirror -R --parallel=4 _release/downloads downloads/exhibition;
             mirror -R --parallel=4 2d/content 2d/content;
             mirror -R --parallel=4 2d/t/06 2d/t/06;
             mirror -R --parallel=4 2d/t/07 2d/t/07;
             mirror -R --parallel=4 2d/t/08 2d/t/08;
+            mirror -R --parallel=4 2d/t/09 2d/t/09;
             mirror -R --parallel=4 3d/review 3d/review;
             mirror -R --parallel=4 fsinfo-static/v0.9 3d/v0.9;
             mirror -R --parallel=4 _release/3d-tests 3d/t;
@@ -93,12 +98,12 @@ jobs:
       - name: Verify public pages and original PDF bytes
         run: |
           set -euo pipefail
-          for file in index.html 2d/index.html 2d/t/index.html 2d/t/06/index.html 2d/t/07/index.html 2d/t/08/index.html 3d/index.html 3d/t/index.html; do
+          for file in index.html 2d/index.html 2d/t/index.html 2d/t/06/index.html 2d/t/07/index.html 2d/t/08/index.html 2d/t/09/index.html 3d/index.html 3d/t/index.html; do
             curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/${file%index.html}?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live.html
             cmp "$file" /tmp/futurehawzah-live.html
           done
-          curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/3d/t/17/?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live-15.html
-          cmp _release/3d-tests/17/index.html /tmp/futurehawzah-live-15.html
+          curl -fsSL --retry 3 --max-time 45 "https://futurehawzah.ir/3d/t/18/?deploy=$GITHUB_SHA" -o /tmp/futurehawzah-live-18.html
+          cmp _release/3d-tests/18/index.html /tmp/futurehawzah-live-18.html
           mkdir -p _release/public
           for file in _release/downloads/*.pdf; do
             name="${file##*/}"
